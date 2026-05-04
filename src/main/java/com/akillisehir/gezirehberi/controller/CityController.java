@@ -1,6 +1,6 @@
 package com.akillisehir.gezirehberi.controller;
 
-import com.akillisehir.gezirehberi.entity.City;
+import com.akillisehir.gezirehberi.dto.CityDto;
 import com.akillisehir.gezirehberi.service.abstracts.CityService;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,17 +17,27 @@ public class CityController {
     }
 
     @GetMapping
-    public List<City> getAllCities() {
+    public List<CityDto> getAllCities() {
         return cityService.getAllCities();
     }
 
     @GetMapping("/{id}")
-    public City getCityById(@PathVariable Long id) {
+    public CityDto getCityById(@PathVariable Long id) {
         return cityService.getCityById(id);
     }
 
     @PostMapping
-    public City createCity(@RequestBody City city) {
-        return cityService.createCity(city);
+    public CityDto createCity(@RequestBody CityDto cityDto) {
+        return cityService.createCity(cityDto);
+    }
+
+    @PutMapping("/{id}")
+    public CityDto updateCity(@PathVariable Long id, @RequestBody CityDto cityDto) {
+        return cityService.updateCity(id, cityDto);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteCity(@PathVariable Long id) {
+        cityService.deleteCity(id);
     }
 }

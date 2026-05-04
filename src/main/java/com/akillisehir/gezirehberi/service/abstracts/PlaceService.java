@@ -1,19 +1,23 @@
 package com.akillisehir.gezirehberi.service.abstracts;
 
-import com.akillisehir.gezirehberi.entity.Place;
+import com.akillisehir.gezirehberi.dto.PlaceDto;
 import com.akillisehir.gezirehberi.enums.PlaceCategory;
 
 import java.util.List;
 
 public interface PlaceService {
 
-    List<Place> getAllPlaces();
+    List<PlaceDto> getAllPlaces();
 
-    Place getPlaceById(Long id);
+    PlaceDto getPlaceById(Long id);
 
-    List<Place> getPlacesByCity(Long cityId);
+    List<PlaceDto> getPlacesByCity(Long cityId);
 
-    List<Place> getPlacesByCategory(PlaceCategory category);
+    List<PlaceDto> getPlacesByCategory(PlaceCategory category);
 
-    Place createPlace(Place place);
+    PlaceDto createPlace(PlaceDto placeDto);
+
+    PlaceDto updatePlace(Long id, PlaceDto placeDto);
+
+    void deletePlace(Long id);
 }

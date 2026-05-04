@@ -1,14 +1,18 @@
 package com.akillisehir.gezirehberi.service.abstracts;
 
-import com.akillisehir.gezirehberi.entity.City;
+import com.akillisehir.gezirehberi.dto.CityDto;
 
 import java.util.List;
 
 public interface CityService {
 
-    List<City> getAllCities();
+    List<CityDto> getAllCities();
 
-    City getCityById(Long id);
+    CityDto getCityById(Long id);
 
-    City createCity(City city);
+    CityDto createCity(CityDto cityDto);
+
+    CityDto updateCity(Long id, CityDto cityDto);
+
+    void deleteCity(Long id);
 }
