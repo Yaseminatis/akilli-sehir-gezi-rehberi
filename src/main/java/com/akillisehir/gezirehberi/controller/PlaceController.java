@@ -1,6 +1,6 @@
 package com.akillisehir.gezirehberi.controller;
 
-import com.akillisehir.gezirehberi.entity.Place;
+import com.akillisehir.gezirehberi.dto.PlaceDto;
 import com.akillisehir.gezirehberi.enums.PlaceCategory;
 import com.akillisehir.gezirehberi.service.abstracts.PlaceService;
 import org.springframework.web.bind.annotation.*;
@@ -18,27 +18,37 @@ public class PlaceController {
     }
 
     @GetMapping
-    public List<Place> getAllPlaces() {
+    public List<PlaceDto> getAllPlaces() {
         return placeService.getAllPlaces();
     }
 
     @GetMapping("/{id}")
-    public Place getPlaceById(@PathVariable Long id) {
+    public PlaceDto getPlaceById(@PathVariable Long id) {
         return placeService.getPlaceById(id);
     }
 
     @GetMapping("/city/{cityId}")
-    public List<Place> getPlacesByCity(@PathVariable Long cityId) {
+    public List<PlaceDto> getPlacesByCity(@PathVariable Long cityId) {
         return placeService.getPlacesByCity(cityId);
     }
 
     @GetMapping("/category")
-    public List<Place> getPlacesByCategory(@RequestParam PlaceCategory category) {
+    public List<PlaceDto> getPlacesByCategory(@RequestParam PlaceCategory category) {
         return placeService.getPlacesByCategory(category);
     }
 
     @PostMapping
-    public Place createPlace(@RequestBody Place place) {
-        return placeService.createPlace(place);
+    public PlaceDto createPlace(@RequestBody PlaceDto placeDto) {
+        return placeService.createPlace(placeDto);
+    }
+
+    @PutMapping("/{id}")
+    public PlaceDto updatePlace(@PathVariable Long id, @RequestBody PlaceDto placeDto) {
+        return placeService.updatePlace(id, placeDto);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deletePlace(@PathVariable Long id) {
+        placeService.deletePlace(id);
     }
 }
