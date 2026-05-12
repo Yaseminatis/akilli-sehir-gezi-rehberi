@@ -1,8 +1,10 @@
 package com.akillisehir.gezirehberi.controller;
 
+import com.akillisehir.gezirehberi.dto.ApiResponse;
 import com.akillisehir.gezirehberi.dto.PlaceDto;
 import com.akillisehir.gezirehberi.enums.PlaceCategory;
 import com.akillisehir.gezirehberi.service.abstracts.PlaceService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,37 +20,60 @@ public class PlaceController {
     }
 
     @GetMapping
-    public List<PlaceDto> getAllPlaces() {
-        return placeService.getAllPlaces();
+    public ResponseEntity<ApiResponse<List<PlaceDto>>> getAllPlaces() {
+        return ResponseEntity.ok(
+                ApiResponse.success("Mekanlar başarıyla listelendi.", placeService.getAllPlaces())
+        );
     }
 
     @GetMapping("/{id}")
-    public PlaceDto getPlaceById(@PathVariable Long id) {
-        return placeService.getPlaceById(id);
+    public ResponseEntity<ApiResponse<PlaceDto>> getPlaceById(@PathVariable Long id) {
+        return ResponseEntity.ok(
+                ApiResponse.success("Mekan başarıyla getirildi.", placeService.getPlaceById(id))
+        );
     }
 
     @GetMapping("/city/{cityId}")
-    public List<PlaceDto> getPlacesByCity(@PathVariable Long cityId) {
-        return placeService.getPlacesByCity(cityId);
+    public ResponseEntity<ApiResponse<List<PlaceDto>>> getPlacesByCity(@PathVariable Long cityId) {
+        return ResponseEntity.ok(
+                ApiResponse.success("Şehre ait mekanlar başarıyla listelendi.", placeService.getPlacesByCity(cityId))
+        );
     }
 
     @GetMapping("/category")
-    public List<PlaceDto> getPlacesByCategory(@RequestParam PlaceCategory category) {
-        return placeService.getPlacesByCategory(category);
+    public ResponseEntity<ApiResponse<List<PlaceDto>>> getPlacesByCategory(@RequestParam PlaceCategory category) {
+        return ResponseEntity.ok(
+                ApiResponse.success("Kategoriye ait mekanlar başarıyla listelendi.", placeService.getPlacesByCategory(category))
+        );
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<ApiResponse<List<PlaceDto>>> searchPlaces(@RequestParam String keyword) {
+        return ResponseEntity.ok(
+                ApiResponse.success("Arama sonuçları başarıyla listelendi.", placeService.searchPlaces(keyword))
+        );
     }
 
     @PostMapping
-    public PlaceDto createPlace(@RequestBody PlaceDto placeDto) {
-        return placeService.createPlace(placeDto);
+    public ResponseEntity<ApiResponse<PlaceDto>> createPlace(@RequestBody PlaceDto placeDto) {
+        return ResponseEntity.ok(
+                ApiResponse.success("Mekan başarıyla oluşturuldu.", placeService.createPlace(placeDto))
+        );
     }
 
     @PutMapping("/{id}")
-    public PlaceDto updatePlace(@PathVariable Long id, @RequestBody PlaceDto placeDto) {
-        return placeService.updatePlace(id, placeDto);
+    public ResponseEntity<ApiResponse<PlaceDto>> updatePlace(@PathVariable Long id, @RequestBody PlaceDto placeDto) {
+        return ResponseEntity.ok(
+                ApiResponse.success("Mekan başarıyla güncellendi.", placeService.updatePlace(id, placeDto))
+        );
     }
 
     @DeleteMapping("/{id}")
-    public void deletePlace(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Object>> deletePlace(@PathVariable Long id) {
         placeService.deletePlace(id);
+
+        return ResponseEntity.ok(
+                ApiResponse.success("Mekan başarıyla silindi.", null)
+        );
     }
 }

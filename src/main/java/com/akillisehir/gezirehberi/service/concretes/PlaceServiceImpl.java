@@ -57,6 +57,14 @@ public class PlaceServiceImpl implements PlaceService {
     }
 
     @Override
+    public List<PlaceDto> searchPlaces(String keyword) {
+        return placeRepository.findByNameContainingIgnoreCase(keyword)
+                .stream()
+                .map(PlaceMapper::toDto)
+                .toList();
+    }
+
+    @Override
     public PlaceDto createPlace(PlaceDto placeDto) {
         Place place = PlaceMapper.toEntity(placeDto);
 
@@ -82,6 +90,7 @@ public class PlaceServiceImpl implements PlaceService {
         if (placeDto.getCityId() != null) {
             City city = cityRepository.findById(placeDto.getCityId())
                     .orElseThrow(() -> new ResourceNotFoundException("Şehir bulunamadı"));
+
             place.setCity(city);
         }
 

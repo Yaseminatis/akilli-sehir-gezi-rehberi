@@ -15,6 +15,8 @@ public interface PlaceService {
 
     List<PlaceDto> getPlacesByCategory(PlaceCategory category);
 
+    List<PlaceDto> searchPlaces(String keyword);
+
     PlaceDto createPlace(PlaceDto placeDto);
 
     PlaceDto updatePlace(Long id, PlaceDto placeDto);
