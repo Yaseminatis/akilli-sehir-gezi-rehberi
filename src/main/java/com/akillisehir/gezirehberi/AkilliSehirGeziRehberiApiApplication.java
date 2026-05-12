@@ -4,10 +4,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 @SpringBootApplication
 @EntityScan("com.akillisehir.gezirehberi.entity")
 @EnableJpaRepositories("com.akillisehir.gezirehberi.repository")
+@EnableMongoRepositories("com.akillisehir.gezirehberi.nosql.repository")
 public class AkilliSehirGeziRehberiApiApplication {
 
     public static void main(String[] args) {
