@@ -1,0 +1,31 @@
+services:
+  mongodb:
+    image: mongo:7
+    container_name: akilli-sehir-mongo-compose
+    hostname: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - akilli-sehir-network
+
+  backend:
+    build: .
+    container_name: akilli-sehir-backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongodb
+    environment:
+      SPRING_DATA_MONGODB_HOST: mongodb
+      SPRING_DATA_MONGODB_PORT: 27017
+      SPRING_DATA_MONGODB_DATABASE: akilli_sehir_nosql
+    networks:
+      - akilli-sehir-network
+
+volumes:
+  mongo-data:
+
+networks:
+  akilli-sehir-network:
