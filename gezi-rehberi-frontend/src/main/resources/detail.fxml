@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox spacing="25" alignment="TOP_CENTER" stylesheets="@style.css" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.DetailController">
+    <padding><Insets top="40" right="60" bottom="40" left="60"/></padding>
+
+    <HBox alignment="CENTER_LEFT" spacing="30">
+        <Button text="← Geri Dön" onAction="#goBack" styleClass="back-button"/>
+        <VBox>
+            <Label fx:id="cityNameLabel" text="Şehir Adı" styleClass="title-text"/>
+            <Label text="Keşfedilecek Harika Yerler" style="-fx-text-fill: #9ca3af; -fx-font-size: 14px;"/>
+        </VBox>
+    </HBox>
+
+    <Separator />
+
+    <VBox style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 5);">
+        <Label fx:id="cityDescLabel" text="Açıklama" wrapText="true" styleClass="description-text"/>
+    </VBox>
+
+    <Label text="📍 Gezilecek Mekanlar" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #111827;"/>
+
+    <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent; -fx-border-color: transparent;">
+        <VBox fx:id="placesContainer" spacing="15" alignment="TOP_CENTER">
+        </VBox>
+    </ScrollPane>
+</VBox>

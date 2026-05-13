@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox spacing="20" alignment="TOP_CENTER" stylesheets="@style.css" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.FavoritesController">
+    <padding><Insets top="40" right="60" bottom="40" left="60"/></padding>
+
+    <HBox alignment="CENTER_LEFT" spacing="20">
+        <Button text="← Ana Sayfaya Dön" onAction="#goBack" styleClass="back-button"/>
+        <Label text="⭐ Favori Mekanlarım (NoSQL)" styleClass="title-text"/>
+    </HBox>
+
+    <Separator />
+
+    <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;">
+        <VBox fx:id="favoritesContainer" spacing="15" alignment="TOP_CENTER" />
+    </ScrollPane>
+</VBox>

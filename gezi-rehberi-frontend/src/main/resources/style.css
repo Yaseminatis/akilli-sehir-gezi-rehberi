@@ -1,0 +1,61 @@
+.root {
+    -fx-background-color: #f3f4f6;
+    -fx-font-family: "Segoe UI", sans-serif;
+}
+
+.city-card {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 4);
+    -fx-padding: 15;
+    -fx-spacing: 10;
+    -fx-cursor: hand;
+}
+
+.city-card:hover {
+    -fx-background-color: #f9fafb;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 15, 0, 0, 6);
+}
+
+.title-text {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1f2937;
+}
+
+.card-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #374151;
+}
+/* Geri Dön Butonu */
+.back-button {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #374151;
+    -fx-border-color: #d1d5db;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 8 16;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+}
+
+.back-button:hover {
+    -fx-background-color: #f3f4f6;
+}
+
+/* Şehir Açıklaması */
+.description-text {
+    -fx-font-size: 16px;
+    -fx-text-fill: #4b5563;
+    -fx-line-spacing: 1.5;
+}
+
+/* Mekan Kartı (Daha sonra eklenecek mekanlar için) */
+.place-card {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-padding: 15;
+    -fx-spacing: 5;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 8, 0, 0, 2);
+}
