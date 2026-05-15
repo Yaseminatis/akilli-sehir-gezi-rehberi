@@ -33,4 +33,14 @@ public class FavoriteServiceImpl implements FavoriteService {
     public List<FavoriteDocument> getFavoritesByUser(Long userId) {
         return favoriteRepository.findByUserId(userId);
     }
+
+    @Override
+    public void removeFavorite(Long userId, Long placeId) {
+
+        if (!favoriteRepository.existsByUserIdAndPlaceId(userId, placeId)) {
+            throw new IllegalArgumentException("Favori bulunamadı.");
+        }
+
+        favoriteRepository.deleteByUserIdAndPlaceId(userId, placeId);
+    }
 }

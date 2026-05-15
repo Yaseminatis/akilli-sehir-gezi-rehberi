@@ -10,4 +10,6 @@ public interface FavoriteRepository extends MongoRepository<FavoriteDocument, St
     List<FavoriteDocument> findByUserId(Long userId);
 
     boolean existsByUserIdAndPlaceId(Long userId, Long placeId);
+
+    void deleteByUserIdAndPlaceId(Long userId, Long placeId);
 }

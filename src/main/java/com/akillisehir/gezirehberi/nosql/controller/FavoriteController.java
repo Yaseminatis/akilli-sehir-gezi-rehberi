@@ -41,4 +41,19 @@ public class FavoriteController {
                 )
         );
     }
+
+    @DeleteMapping
+    public ResponseEntity<ApiResponse<String>> removeFavorite(
+            @RequestParam Long userId,
+            @RequestParam Long placeId) {
+
+        favoriteService.removeFavorite(userId, placeId);
+
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        "Mekan favorilerden başarıyla çıkarıldı.",
+                        "Silme işlemi tamamlandı."
+                )
+        );
+    }
 }

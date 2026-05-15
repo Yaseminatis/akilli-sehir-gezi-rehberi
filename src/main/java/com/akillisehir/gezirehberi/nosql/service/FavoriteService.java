@@ -9,4 +9,6 @@ public interface FavoriteService {
     FavoriteDocument addFavorite(Long userId, Long placeId);
 
     List<FavoriteDocument> getFavoritesByUser(Long userId);
+
+    void removeFavorite(Long userId, Long placeId);
 }
