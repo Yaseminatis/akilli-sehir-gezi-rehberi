@@ -24,7 +24,6 @@ public class LoginController {
         String email = emailField.getText().trim();
         String password = passwordField.getText();
 
-        // 1. Temel Kontrol
         if (email.isEmpty() || password.isEmpty()) {
             errorLabel.setText("Lütfen tüm alanları doldurun.");
             return;
@@ -32,24 +31,36 @@ public class LoginController {
 
         try {
             String response = GeziBacakendClient.getUserByEmail(email);
-            System.out.println("🚨 BACKEND'DEN GELEN CEVAP: " + response);
-            JsonObject rootJson = JsonParser.parseString(response).getAsJsonObject();
+            System.out.println("🚨 BACKEND'DEN GELEN CEVAP: '" + response + "'");
 
-            JsonObject userJson = null;
+            // 1. KURŞUN GEÇİRMEZ KONTROL: Backend boş mu döndü? (Hatanın sebebi burasıydı)
+            if (response == null || response.trim().isEmpty()) {
+                errorLabel.setText("Hata: Bu e-posta ile kayıtlı kullanıcı bulunamadı (Veritabanı boş olabilir).");
+                return;
+            }
 
-            // 1. Yasemin'in ApiResponse kutusunu (data) kontrol et
+            // 2. Yanıt gerçekten bir JSON mu?
+            com.google.gson.JsonElement parsedElement = com.google.gson.JsonParser.parseString(response);
+            if (!parsedElement.isJsonObject()) {
+                errorLabel.setText("Hata: Sunucudan geçersiz bir yanıt geldi.");
+                return;
+            }
+
+            com.google.gson.JsonObject rootJson = parsedElement.getAsJsonObject();
+            com.google.gson.JsonObject userJson = null;
+
+            // 3. Yasemin'in kutusunu aç
             if (rootJson.has("data") && !rootJson.get("data").isJsonNull()) {
                 userJson = rootJson.getAsJsonObject("data");
             } else {
-                userJson = rootJson; // Kutu yoksa direkt objeyi al
+                userJson = rootJson;
             }
 
-            // 2. Artık id'yi arayabiliriz
+            // 4. Şifreyi kontrol et
             if (userJson != null && userJson.has("id")) {
-                String dbPassword = userJson.get("password").getAsString();
+                String dbPassword = userJson.has("password") && !userJson.get("password").isJsonNull() ? userJson.get("password").getAsString() : "";
 
                 if (password.equals(dbPassword)) {
-                    // Şifre doğru! Sisteme gir.
                     SessionManager.setCurrentUserId(userJson.get("id").getAsLong());
                     SessionManager.setCurrentUserRole(userJson.get("role").getAsString());
                     SessionManager.setCurrentUsername(userJson.get("username").getAsString());
@@ -62,7 +73,7 @@ public class LoginController {
                 errorLabel.setText("Hata: Bu e-posta ile kayıtlı kullanıcı bulunamadı.");
             }
         } catch (Exception e) {
-            errorLabel.setText("Sunucuya bağlanılamadı. Lütfen tekrar deneyin.");
+            errorLabel.setText("Sunucu hatası veya bağlantı problemi!");
             e.printStackTrace();
         }
     }

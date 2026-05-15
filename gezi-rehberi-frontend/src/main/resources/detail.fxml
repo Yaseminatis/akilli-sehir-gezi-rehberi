@@ -2,28 +2,52 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.image.ImageView?>
 
-<VBox spacing="25" alignment="TOP_CENTER" stylesheets="@style.css" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.DetailController">
-    <padding><Insets top="40" right="60" bottom="40" left="60"/></padding>
+<StackPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.DetailController" style="-fx-background-color: #f3f4f6;">
 
-    <HBox alignment="CENTER_LEFT" spacing="30">
-        <Button text="← Geri Dön" onAction="#goBack" styleClass="back-button"/>
-        <VBox>
-            <Label fx:id="cityNameLabel" text="Şehir Adı" styleClass="title-text"/>
-            <Label text="Keşfedilecek Harika Yerler" style="-fx-text-fill: #9ca3af; -fx-font-size: 14px;"/>
-        </VBox>
-    </HBox>
+    <VBox spacing="20">
+        <padding><Insets top="20" right="30" bottom="20" left="30"/></padding>
 
-    <Separator />
+        <HBox spacing="15" alignment="CENTER_LEFT">
+            <Button text="⬅ Geri Dön" onAction="#goBack" style="-fx-background-color: #6b7280; -fx-text-fill: white; -fx-cursor: hand;"/>
+            <Label fx:id="cityNameLabel" text="Şehir Adı" style="-fx-font-size: 28px; -fx-font-weight: bold;"/>
+        </HBox>
 
-    <VBox style="-fx-background-color: white; -fx-background-radius: 15; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 5);">
-        <Label fx:id="cityDescLabel" text="Açıklama" wrapText="true" styleClass="description-text"/>
+        <Label fx:id="cityDescLabel" text="Şehir açıklaması buraya gelecek..." wrapText="true" style="-fx-text-fill: #4b5563;"/>
+        <Separator/>
+
+        <Label text="📍 Bu Şehirdeki Görülecek Mekanlar" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+        <ScrollPane fitToWidth="true" style="-fx-background: transparent; -fx-background-color: transparent;">
+            <FlowPane fx:id="placesContainer" hgap="15" vgap="15"/>
+        </ScrollPane>
     </VBox>
 
-    <Label text="📍 Gezilecek Mekanlar" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #111827;"/>
+    <VBox fx:id="planModal" visible="false" alignment="CENTER" style="-fx-background-color: rgba(0,0,0,0.5);">
+        <VBox spacing="15" maxWidth="350" style="-fx-background-color: white; -fx-padding: 30; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 20, 0, 0, 0);">
+            <Label text="🗺️ Hangi Plana Eklensin?" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+            <Label fx:id="selectedPlaceLabel" text="Mekan Adı" style="-fx-text-fill: #6b7280;"/>
 
-    <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent; -fx-border-color: transparent;">
-        <VBox fx:id="placesContainer" spacing="15" alignment="TOP_CENTER">
+            <ComboBox fx:id="planComboBox" promptText="Bir plan seçin..." prefWidth="300" style="-fx-background-color: #f3f4f6; -fx-border-color: #d1d5db; -fx-border-radius: 5;"/>
+
+            <HBox spacing="10" alignment="CENTER_RIGHT" style="-fx-padding: 10 0 0 0;">
+                <Button text="İptal" onAction="#closeModal" style="-fx-background-color: transparent; -fx-text-fill: #6b7280; -fx-cursor: hand;"/>
+                <Button text="Planıma Kaydet" onAction="#saveToPlan" style="-fx-background-color: #10b981; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-radius: 5;"/>
+            </HBox>
         </VBox>
-    </ScrollPane>
-</VBox>
+    </VBox>
+    <VBox fx:id="placeDetailModal" visible="false" alignment="CENTER" style="-fx-background-color: rgba(0,0,0,0.7);">
+        <VBox spacing="20" maxWidth="500" style="-fx-background-color: white; -fx-padding: 30; -fx-background-radius: 15;">
+            <ImageView fx:id="modalPlaceImage" fitWidth="440" fitHeight="250" preserveRatio="false" style="-fx-background-radius: 10;"/>
+            <VBox spacing="10">
+                <Label fx:id="modalPlaceName" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+                <Label fx:id="modalPlaceCategory" style="-fx-text-fill: #8b5cf6; -fx-font-weight: bold;"/>
+                <ScrollPane prefHeight="150" style="-fx-background-color: transparent;">
+                    <Label fx:id="modalPlaceLongDesc" wrapText="true" style="-fx-text-fill: #4b5563; -fx-font-size: 14px;"/>
+                </ScrollPane>
+            </VBox>
+            <Button text="Kapat" onAction="#closePlaceDetailModal" style="-fx-background-color: #6b7280; -fx-text-fill: white; -fx-width: 100%; -fx-cursor: hand;"/>
+        </VBox>
+    </VBox>
+</StackPane>

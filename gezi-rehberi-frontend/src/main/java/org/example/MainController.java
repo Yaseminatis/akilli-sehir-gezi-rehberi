@@ -46,20 +46,25 @@ public class MainController {
                 card.getChildren().addAll(name, desc);
 
                 // İŞTE BURASI: Karta tıklama özelliği ekliyoruz
-                card.setOnMouseClicked(e -> {
+                card.setOnMouseClicked(event -> {
+                    System.out.println("🚨 ŞEHRE TIKLANDI: " + city.getName()); // 1. Tıklamayı algılıyor mu?
                     try {
-                        FXMLLoader loader = new FXMLLoader(getClass().getResource("/detail.fxml"));
-                        Parent root = loader.load();
+                        javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/detail.fxml"));
+                        javafx.scene.Parent root = loader.load();
 
-                        // Detay sayfasına seçilen şehri gönderiyoruz
                         DetailController controller = loader.getController();
-                        controller.initData(city);
+                        if (controller != null) {
+                            controller.initData(city);
+                        } else {
+                            System.out.println("🚨 HATA: DetailController dosyaya bağlanamamış!");
+                        }
 
-                        // Ekranı değiştiriyoruz
-                        Stage stage = (Stage) card.getScene().getWindow();
-                        stage.setScene(new Scene(root, 800, 600));
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
+                        javafx.stage.Stage stage = (javafx.stage.Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+                        stage.setScene(new javafx.scene.Scene(root, 800, 600));
+
+                    } catch (Exception e) {
+                        System.out.println("🚨 SAYFA YÜKLENİRKEN ÇÖKTÜ! HATA SEBEBİ:");
+                        e.printStackTrace(); // 2. Neden çöktüğünü konsola kırmızı kırmızı yazacak
                     }
                 });
 
@@ -89,6 +94,17 @@ public class MainController {
             javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/add_city.fxml"));
             javafx.stage.Stage stage = (javafx.stage.Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
             stage.setScene(new javafx.scene.Scene(loader.load(), 800, 600));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    @FXML
+    private void openPlansPage(javafx.event.ActionEvent event) {
+        try {
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/plans.fxml"));
+            javafx.scene.Parent root = loader.load();
+            javafx.stage.Stage stage = (javafx.stage.Stage) ((javafx.scene.Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new javafx.scene.Scene(root, 800, 600));
         } catch (Exception e) {
             e.printStackTrace();
         }

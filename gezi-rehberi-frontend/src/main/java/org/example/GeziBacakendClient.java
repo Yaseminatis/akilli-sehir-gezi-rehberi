@@ -252,15 +252,11 @@ public class GeziBacakendClient {
      * GET - Mekanın puanlarını getir
      */
     public static String getRatingsByPlace(Long placeId) throws Exception {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/ratings/place/" + placeId))
+        java.net.http.HttpRequest request = java.net.http.HttpRequest.newBuilder()
+                .uri(java.net.URI.create(BASE_URL + "/ratings/place/" + placeId))
                 .GET()
                 .build();
-
-        HttpResponse<String> response = client.send(request,
-                HttpResponse.BodyHandlers.ofString());
-
-        return response.body();
+        return client.send(request, java.net.http.HttpResponse.BodyHandlers.ofString()).body();
     }
 
     /**
@@ -357,41 +353,66 @@ public class GeziBacakendClient {
     /**
      * POST - Gezi planı oluştur (MongoDB)
      */
-    public static String createTravelPlan(Long userId, String title, String placeIdsJson)
-            throws Exception {
-        String jsonBody = String.format("""
-            {
-                "userId": %d,
-                "title": "%s",
-                "placeIds": %s
-            }
-            """, userId, title, placeIdsJson);
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/nosql/travel-plans"))
-                .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
-                .header("Content-Type", "application/json")
-                .build();
-
-        HttpResponse<String> response = client.send(request,
-                HttpResponse.BodyHandlers.ofString());
-
-        return response.body();
-    }
-
-    /**
-     * GET - Kullanıcının gezi planlarını getir (MongoDB)
-     */
-    public static String getTravelPlansByUser(Long userId) throws Exception {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/nosql/travel-plans/user/" + userId))
+// Belirli bir şehre ait mekanları çeker
+    public static String getPlacesByCityId(Long cityId) throws Exception {
+        java.net.http.HttpRequest request = java.net.http.HttpRequest.newBuilder()
+                .uri(java.net.URI.create(BASE_URL + "/places/city/" + cityId))
                 .GET()
                 .build();
+        return client.send(request, java.net.http.HttpResponse.BodyHandlers.ofString()).body();
+    }
 
-        HttpResponse<String> response = client.send(request,
-                HttpResponse.BodyHandlers.ofString());
+    // Kullanıcının Gezi Planlarını Çeker
+    public static String getTravelPlansByUser(Long userId) throws Exception {
+        java.net.http.HttpRequest request = java.net.http.HttpRequest.newBuilder()
+                .uri(java.net.URI.create(BASE_URL + "/nosql/travel-plans/user/" + userId))
+                .GET()
+                .build();
+        return client.send(request, java.net.http.HttpResponse.BodyHandlers.ofString()).body();
+    }
 
-        return response.body();
+    // Yeni Gezi Planı Oluşturma
+    public static String createTravelPlan(Long userId, String title, java.util.List<Long> placeIds) throws Exception {
+        com.google.gson.JsonArray placesArray = new com.google.gson.JsonArray();
+        for (Long id : placeIds) { placesArray.add(id); }
+
+        com.google.gson.JsonObject jsonBody = new com.google.gson.JsonObject();
+        jsonBody.addProperty("userId", userId);
+        jsonBody.addProperty("title", title);
+        jsonBody.add("placeIds", placesArray);
+
+        java.net.http.HttpRequest request = java.net.http.HttpRequest.newBuilder()
+                .uri(java.net.URI.create(BASE_URL + "/nosql/travel-plans"))
+                .POST(java.net.http.HttpRequest.BodyPublishers.ofString(jsonBody.toString()))
+                .header("Content-Type", "application/json")
+                .build();
+        return client.send(request, java.net.http.HttpResponse.BodyHandlers.ofString()).body();
+    }
+
+    // ID'ye Göre Tek Bir Planı Getirme
+    public static String getPlanById(String planId) throws Exception {
+        java.net.http.HttpRequest request = java.net.http.HttpRequest.newBuilder()
+                .uri(java.net.URI.create(BASE_URL + "/nosql/travel-plans/" + planId))
+                .GET()
+                .build();
+        return client.send(request, java.net.http.HttpResponse.BodyHandlers.ofString()).body();
+    }
+
+    // Planı Güncelleme
+    public static String updatePlan(String planId, String jsonBody) throws Exception {
+        java.net.http.HttpRequest request = java.net.http.HttpRequest.newBuilder()
+                .uri(java.net.URI.create(BASE_URL + "/nosql/travel-plans/" + planId))
+                .PUT(java.net.http.HttpRequest.BodyPublishers.ofString(jsonBody))
+                .header("Content-Type", "application/json")
+                .build();
+        return client.send(request, java.net.http.HttpResponse.BodyHandlers.ofString()).body();
+    }
+    public static String deletePlan(String planId) throws Exception {
+        java.net.http.HttpRequest request = java.net.http.HttpRequest.newBuilder()
+                .uri(java.net.URI.create(BASE_URL + "/nosql/travel-plans/" + planId))
+                .DELETE()
+                .build();
+        return client.send(request, java.net.http.HttpResponse.BodyHandlers.ofString()).body();
     }
 
     // ================== MAIN - ÖRNEK KULLANIM ==================
@@ -438,7 +459,8 @@ public class GeziBacakendClient {
             System.out.println(favorite);
 
             System.out.println("\n=== Gezi Planı Oluştur ===");
-            String plan = createTravelPlan(1L, "İstanbul Turu", "[1, 2, 3, 4]");
+            java.util.List<Long> placeIds = java.util.List.of(1L, 2L, 3L, 4L);
+            String plan = createTravelPlan(1L, "İstanbul Turu", placeIds);
             System.out.println(plan);
 
         } catch (Exception e) {

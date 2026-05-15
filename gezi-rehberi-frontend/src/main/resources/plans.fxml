@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+
+<StackPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.PlansController" style="-fx-background-color: #f9fafb;">
+
+    <VBox spacing="20">
+        <padding><Insets top="30" right="40" bottom="30" left="40"/></padding>
+
+        <HBox alignment="CENTER_LEFT" spacing="20">
+            <Button text="⬅ Ana Sayfaya Dön" onAction="#goBack" style="-fx-background-color: #6b7280; -fx-text-fill: white; -fx-cursor: hand;"/>
+            <Label text="🗺️ Gezi Planlarım" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #111827;"/>
+        </HBox>
+
+        <Separator/>
+
+        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: transparent;">
+            <VBox fx:id="plansContainer" spacing="15"/>
+        </ScrollPane>
+    </VBox>
+
+    <VBox fx:id="planDetailModal" visible="false" alignment="CENTER" style="-fx-background-color: rgba(0,0,0,0.5);">
+        <VBox spacing="15" maxWidth="500" maxHeight="500" style="-fx-background-color: white; -fx-padding: 30; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 20, 0, 0, 0);">
+
+            <HBox alignment="CENTER_LEFT">
+                <Label fx:id="modalPlanTitle" text="Plan Adı" style="-fx-font-size: 22px; -fx-font-weight: bold;"/>
+                <Region HBox.hgrow="ALWAYS" />
+                <Button text="Kapat ❌" onAction="#closeModal" style="-fx-background-color: transparent; -fx-text-fill: #ef4444; -fx-cursor: hand; -fx-font-weight: bold;"/>
+            </HBox>
+
+            <Separator/>
+
+            <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-padding: 10;">
+                <VBox fx:id="modalPlacesContainer" spacing="10"/>
+            </ScrollPane>
+
+        </VBox>
+    </VBox>
+</StackPane>
