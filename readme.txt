@@ -5,7 +5,7 @@ AKILLI ŞEHİR GEZİ REHBERİ - PROJE TESLİM DOSYASI
 1. GRUP BİLGİSİ
 Grup No: 14
 Proje Konusu: Akıllı Şehir Gezi Rehberi (Spring Boot & JavaFX)
-Github Linki:
+Github Linki:https://github.com/Yaseminatis/akilli-sehir-gezi-rehberi
 
 2. EKİP ÜYELERİ
 - Gizem İlhan 211307039
