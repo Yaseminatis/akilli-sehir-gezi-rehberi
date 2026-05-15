@@ -10,7 +10,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -30,7 +29,7 @@ public class FavoritesController {
     private void loadFavorites() {
         try {
             Long userId = SessionManager.getCurrentUserId();
-            String response = GeziBacakendClient.getFavoritesByUser(userId);
+            String response = GeziBackendClient.getFavoritesByUser(userId);
 
             JsonElement parsed = JsonParser.parseString(response);
             JsonArray favArray = parsed.isJsonArray() ? parsed.getAsJsonArray() :
@@ -55,7 +54,7 @@ public class FavoritesController {
                 String placeName = "Yükleniyor...";
                 String category = "Bilinmiyor";
                 try {
-                    String placeRes = GeziBacakendClient.getPlaceById(placeId);
+                    String placeRes = GeziBackendClient.getPlaceById(placeId);
                     JsonObject pObj = JsonParser.parseString(placeRes).getAsJsonObject();
                     if (pObj.has("data")) pObj = pObj.getAsJsonObject("data");
 

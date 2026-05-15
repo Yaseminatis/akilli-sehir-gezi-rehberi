@@ -35,7 +35,7 @@ public class PlansController {
 
         try {
             Long userId = SessionManager.getCurrentUserId();
-            String response = GeziBacakendClient.getTravelPlansByUser(userId);
+            String response = GeziBackendClient.getTravelPlansByUser(userId);
 
             JsonObject rootJson = JsonParser.parseString(response).getAsJsonObject();
             JsonArray dataArray = rootJson.getAsJsonArray("data");
@@ -100,7 +100,7 @@ public class PlansController {
                 Long placeId = placesArray.get(i).getAsLong();
 
                 try {
-                    String placeResponse = GeziBacakendClient.getPlaceById(placeId);
+                    String placeResponse = GeziBackendClient.getPlaceById(placeId);
                     JsonObject placeData = JsonParser.parseString(placeResponse).getAsJsonObject().getAsJsonObject("data");
                     String placeName = placeData.get("name").getAsString();
 
@@ -161,7 +161,7 @@ public class PlansController {
             }
             planObj.add("placeIds", newPlacesArray);
 
-            GeziBacakendClient.updatePlan(planId, planObj.toString());
+            GeziBackendClient.updatePlan(planId, planObj.toString());
             openPlanDetails(planObj);
             loadUserPlans();
 
@@ -172,7 +172,7 @@ public class PlansController {
 
     private void deletePlanCompletely(String planId) {
         try {
-            GeziBacakendClient.deletePlan(planId);
+            GeziBackendClient.deletePlan(planId);
             loadUserPlans();
         } catch (Exception e) {
             e.printStackTrace();

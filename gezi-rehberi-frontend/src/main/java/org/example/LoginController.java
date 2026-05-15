@@ -1,7 +1,5 @@
 package org.example;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -30,7 +28,7 @@ public class LoginController {
         }
 
         try {
-            String response = GeziBacakendClient.getUserByEmail(email);
+            String response = GeziBackendClient.getUserByEmail(email);
 
             if (response == null || response.trim().isEmpty()) {
                 errorLabel.setText("Hata: Bu e-posta ile kayıtlı kullanıcı bulunamadı (Veritabanı boş olabilir).");

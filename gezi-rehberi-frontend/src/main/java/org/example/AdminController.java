@@ -45,7 +45,7 @@ public class AdminController {
   //ADMİN İÇİN BÜTÜN VERİLERİ ÇEKİYORUZ
     private void loadAllData() {
         try {
-            String cityRes = GeziBacakendClient.getAllCities();
+            String cityRes = GeziBackendClient.getAllCities();
             JsonArray cities = JsonParser.parseString(cityRes).isJsonArray()
                     ? JsonParser.parseString(cityRes).getAsJsonArray()
                     : JsonParser.parseString(cityRes).getAsJsonObject().getAsJsonArray("data");
@@ -62,7 +62,7 @@ public class AdminController {
                 placeCityBox.getItems().add(name);
             }
 
-            String placeRes = GeziBacakendClient.getAllPlaces();
+            String placeRes = GeziBackendClient.getAllPlaces();
             JsonArray places = JsonParser.parseString(placeRes).isJsonArray()
                     ? JsonParser.parseString(placeRes).getAsJsonArray()
                     : JsonParser.parseString(placeRes).getAsJsonObject().getAsJsonArray("data");
@@ -132,7 +132,7 @@ public class AdminController {
 
     @FXML private void saveCity() {
         try {
-            GeziBacakendClient.createCity(cityNameField.getText(), cityCountryField.getText(), cityDescArea.getText(), cityImageField.getText());
+            GeziBackendClient.createCity(cityNameField.getText(), cityCountryField.getText(), cityDescArea.getText(), cityImageField.getText());
             cityMessageLabel.setText("✅ Başarıyla Kaydedildi!");
             loadAllData();
             clearCityForm();
@@ -142,7 +142,7 @@ public class AdminController {
     @FXML private void updateCity() {
         if (selectedCityId == null) return;
         try {
-            GeziBacakendClient.updateCity(selectedCityId, cityNameField.getText(), cityCountryField.getText(), cityDescArea.getText(), cityImageField.getText());
+            GeziBackendClient.updateCity(selectedCityId, cityNameField.getText(), cityCountryField.getText(), cityDescArea.getText(), cityImageField.getText());
             cityMessageLabel.setText("✅ Şehir Güncellendi!");
             loadAllData();
         } catch (Exception e) { e.printStackTrace(); }
@@ -151,7 +151,7 @@ public class AdminController {
     @FXML private void deleteCity() {
         if (selectedCityId == null) return;
         try {
-            int status = GeziBacakendClient.deleteCity(selectedCityId);
+            int status = GeziBackendClient.deleteCity(selectedCityId);
             if (status == 200 || status == 204) {
                 cityMessageLabel.setText("🗑️ Şehir Silindi!");
                 loadAllData();
@@ -166,7 +166,7 @@ public class AdminController {
             if (selectedCity == null) return;
             Long cId = cityDataMap.get(selectedCity).get("id").getAsLong();
 
-            GeziBacakendClient.createPlace(placeNameField.getText(), placeDescArea.getText(), placeCategoryBox.getValue(), cId);
+            GeziBackendClient.createPlace(placeNameField.getText(), placeDescArea.getText(), placeCategoryBox.getValue(), cId);
             placeMessageLabel.setText("✅ Mekan Kaydedildi!");
             loadAllData();
             clearPlaceForm();
@@ -179,7 +179,7 @@ public class AdminController {
             String selectedCity = placeCityBox.getValue();
             Long cId = cityDataMap.get(selectedCity).get("id").getAsLong();
 
-            GeziBacakendClient.updatePlace(selectedPlaceId, placeNameField.getText(), placeDescArea.getText(), placeCategoryBox.getValue(), cId);
+            GeziBackendClient.updatePlace(selectedPlaceId, placeNameField.getText(), placeDescArea.getText(), placeCategoryBox.getValue(), cId);
             placeMessageLabel.setText("✅ Mekan Güncellendi!");
             loadAllData();
         } catch (Exception e) { e.printStackTrace(); }
@@ -188,7 +188,7 @@ public class AdminController {
     @FXML private void deletePlace() {
         if (selectedPlaceId == null) return;
         try {
-            int status = GeziBacakendClient.deletePlace(selectedPlaceId);
+            int status = GeziBackendClient.deletePlace(selectedPlaceId);
             if (status == 200 || status == 204) {
                 placeMessageLabel.setText("🗑️ Mekan Silindi!");
                 loadAllData();

@@ -1,6 +1,5 @@
 package org.example;
 
-import com.google.gson.Gson;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -8,7 +7,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class MainController {
@@ -29,7 +27,7 @@ public class MainController {
         }
 
         try {
-            String jsonResponse = GeziBacakendClient.getAllCities();
+            String jsonResponse = GeziBackendClient.getAllCities();
             com.google.gson.JsonElement element = com.google.gson.JsonParser.parseString(jsonResponse);
 
             com.google.gson.Gson gson = new com.google.gson.Gson();

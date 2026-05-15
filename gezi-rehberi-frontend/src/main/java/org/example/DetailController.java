@@ -11,8 +11,6 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
@@ -20,7 +18,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 public class DetailController {
 
@@ -66,7 +63,7 @@ public class DetailController {
 
     private void loadPlaces() {
         try {
-            String response = GeziBacakendClient.getPlacesByCity(currentCity.getId());
+            String response = GeziBackendClient.getPlacesByCity(currentCity.getId());
             processAndLoadPlaces(response);
         } catch (Exception e) {
             e.printStackTrace();
@@ -81,11 +78,11 @@ public class DetailController {
         try {
             String response;
             if (!keyword.isEmpty()) {
-                response = GeziBacakendClient.searchPlaces(keyword);
+                response = GeziBackendClient.searchPlaces(keyword);
             } else if (category != null && !category.equals("TÜMÜ") && !category.isEmpty()) {
-                response = GeziBacakendClient.getPlacesByCategory(category);
+                response = GeziBackendClient.getPlacesByCategory(category);
             } else {
-                response = GeziBacakendClient.getPlacesByCity(currentCity.getId());
+                response = GeziBackendClient.getPlacesByCity(currentCity.getId());
             }
 
             processAndLoadPlaces(response);
@@ -101,7 +98,7 @@ public class DetailController {
         List<Long> favoriMekanIdleri = new ArrayList<>();
         try {
             Long userId = SessionManager.getCurrentUserId();
-            String favResponse = GeziBacakendClient.getFavoritesByUser(userId);
+            String favResponse = GeziBackendClient.getFavoritesByUser(userId);
             JsonElement parsed = JsonParser.parseString(favResponse);
             JsonArray favArray = parsed.isJsonArray() ? parsed.getAsJsonArray() :
                     (parsed.isJsonObject() && parsed.getAsJsonObject().has("data") ? parsed.getAsJsonObject().getAsJsonArray("data") : new JsonArray());
@@ -180,7 +177,26 @@ public class DetailController {
 
                 HBox footer = new HBox(10);
                 footer.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
-                Label ratingLbl = new Label("★ 4.5");
+                String ratingText = "★ Yeni";
+                try {
+                    String ratingsRes = GeziBackendClient.getRatingsByPlace(placeId);
+                    JsonElement parsedRatings = JsonParser.parseString(ratingsRes);
+                    JsonArray rArray = parsedRatings.isJsonArray() ? parsedRatings.getAsJsonArray() :
+                            (parsedRatings.isJsonObject() && parsedRatings.getAsJsonObject().has("data") ? parsedRatings.getAsJsonObject().getAsJsonArray("data") : new JsonArray());
+
+                    if (rArray.size() > 0) {
+                        double totalScore = 0;
+                        for (JsonElement r : rArray) {
+                            totalScore += r.getAsJsonObject().get("score").getAsDouble();
+                        }
+                        double average = totalScore / rArray.size();
+                        ratingText = String.format("★ %.1f", average).replace(",", ".");
+                    }
+                } catch (Exception e) {
+                    System.out.println("Puanlar çekilemedi: " + e.getMessage());
+                }
+
+                Label ratingLbl = new Label(ratingText);
                 ratingLbl.setStyle("-fx-text-fill: #f59e0b; -fx-font-weight: bold; -fx-font-size: 15px;");
 
                 Region spacerFooter = new Region();
@@ -212,7 +228,7 @@ public class DetailController {
 
         try {
             Long currentUserId = SessionManager.getCurrentUserId();
-            String ratingsRes = GeziBacakendClient.getRatingsByPlace(selectedPlaceIdForModal);
+            String ratingsRes = GeziBackendClient.getRatingsByPlace(selectedPlaceIdForModal);
 
             JsonElement parsed = JsonParser.parseString(ratingsRes);
             JsonArray ratingsArray = parsed.isJsonArray() ? parsed.getAsJsonArray() :
@@ -262,7 +278,7 @@ public class DetailController {
 
         try {
             Long userId = SessionManager.getCurrentUserId();
-            GeziBacakendClient.createRating(score, userId, selectedPlaceIdForModal);
+            GeziBackendClient.createRating(score, userId, selectedPlaceIdForModal);
             ratingCombo.setDisable(true);
             if (submitRatingBtn != null) {
                 submitRatingBtn.setDisable(true);
@@ -277,13 +293,18 @@ public class DetailController {
     private void toggleFavorite(Long placeId, Button btn) {
         try {
             Long userId = SessionManager.getCurrentUserId();
+
             if (btn.getText().equals("♡")) {
-                GeziBacakendClient.addFavorite(userId, placeId);
+                GeziBackendClient.addFavorite(userId, placeId);
                 btn.setText("❤");
             } else {
-                System.out.println("🚨 Favoriden çıkarma işlemi backend'de henüz tanımlı değil!");
+                GeziBackendClient.removeFavorite(userId, placeId);
+                btn.setText("♡");
             }
-        } catch (Exception e) { e.printStackTrace(); }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Favori işlemi sırasında hata: " + e.getMessage());
+        }
     }
 
     private void checkExistingPlaceInPlan() {
@@ -298,7 +319,7 @@ public class DetailController {
 
         try {
             String planId = planMap.get(selectedPlan);
-            String planResponse = GeziBacakendClient.getPlanById(planId);
+            String planResponse = GeziBackendClient.getPlanById(planId);
             JsonObject planJson = JsonParser.parseString(planResponse).getAsJsonObject().getAsJsonObject("data");
             JsonArray placesArray = planJson.getAsJsonArray("placeIds");
 
@@ -329,7 +350,7 @@ public class DetailController {
 
         try {
             Long userId = SessionManager.getCurrentUserId();
-            String response = GeziBacakendClient.getTravelPlansByUser(userId);
+            String response = GeziBackendClient.getTravelPlansByUser(userId);
             JsonObject rootJson = JsonParser.parseString(response).getAsJsonObject();
             JsonArray plansArray = rootJson.getAsJsonArray("data");
 
@@ -368,12 +389,12 @@ public class DetailController {
                 newPlanModal.setVisible(true);
             } else {
                 String planId = planMap.get(selectedPlan);
-                String planResponse = GeziBacakendClient.getPlanById(planId);
+                String planResponse = GeziBackendClient.getPlanById(planId);
                 JsonObject planJson = JsonParser.parseString(planResponse).getAsJsonObject().getAsJsonObject("data");
 
                 JsonArray placesArray = planJson.getAsJsonArray("placeIds");
                 placesArray.add(selectedPlaceId);
-                GeziBacakendClient.updatePlan(planId, planJson.toString());
+                GeziBackendClient.updatePlan(planId, planJson.toString());
                 closeModal();
             }
         } catch (Exception e) { e.printStackTrace(); }
@@ -394,7 +415,7 @@ public class DetailController {
             List<Long> initialPlaces = new ArrayList<>();
             initialPlaces.add(selectedPlaceId);
 
-            GeziBacakendClient.createTravelPlan(userId, title, initialPlaces);
+            GeziBackendClient.createTravelPlan(userId, title, initialPlaces);
 
             newPlanModal.setVisible(false);
             System.out.println("Yeni plan oluşturuldu ve mekan eklendi: " + title);
