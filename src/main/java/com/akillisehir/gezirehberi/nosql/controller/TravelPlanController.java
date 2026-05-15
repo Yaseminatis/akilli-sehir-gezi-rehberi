@@ -41,4 +41,43 @@ public class TravelPlanController {
                 )
         );
     }
+
+    @GetMapping("/{planId}")
+    public ResponseEntity<ApiResponse<TravelPlanDocument>> getPlanById(
+            @PathVariable String planId) {
+
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        "Gezi planı başarıyla getirildi.",
+                        travelPlanService.getPlanById(planId)
+                )
+        );
+    }
+
+    @PutMapping("/{planId}")
+    public ResponseEntity<ApiResponse<TravelPlanDocument>> updatePlan(
+            @PathVariable String planId,
+            @RequestBody TravelPlanDocument travelPlanDocument) {
+
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        "Gezi planı başarıyla güncellendi.",
+                        travelPlanService.updatePlan(planId, travelPlanDocument)
+                )
+        );
+    }
+
+    @DeleteMapping("/{planId}")
+    public ResponseEntity<ApiResponse<Void>> deletePlan(
+            @PathVariable String planId) {
+
+        travelPlanService.deletePlan(planId);
+
+        return ResponseEntity.ok(
+                ApiResponse.success(
+                        "Gezi planı başarıyla silindi.",
+                        null
+                )
+        );
+    }
 }
