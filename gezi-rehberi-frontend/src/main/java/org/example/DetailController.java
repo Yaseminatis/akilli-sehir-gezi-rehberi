@@ -16,8 +16,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
@@ -117,51 +116,51 @@ public class DetailController {
                 JsonObject placeObj = element.getAsJsonObject();
                 Long placeId = placeObj.get("id").getAsLong();
                 String name = placeObj.get("name").getAsString();
-                String desc = placeObj.has("description") ? placeObj.get("description").getAsString() : "Açıklama bulunmuyor.";
-                String imageUrl = placeObj.has("imageUrl") && !placeObj.get("imageUrl").isJsonNull() ? placeObj.get("imageUrl").getAsString() : null;
+                String desc = placeObj.has("description") ? placeObj.get("description").getAsString() : "";
+                String category = placeObj.get("category").getAsString();
 
-                // --- ŞIK KART TASARIMI ---
-                VBox card = new VBox(10);
-                card.setStyle("-fx-background-color: white; -fx-padding: 0; -fx-background-radius: 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 5); -fx-pref-width: 250; -fx-overflow: hidden;");
+                // --- SADE VE ŞIK KART TASARIMI ---
+                VBox card = new VBox(12);
+                card.setStyle("-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 12; " +
+                        "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 4); " +
+                        "-fx-pref-width: 260; -fx-cursor: hand;");
 
-                // 1. MEKAN GÖRSELİ
-                javafx.scene.image.ImageView imageView = new javafx.scene.image.ImageView();
-                imageView.setFitWidth(250);
-                imageView.setFitHeight(150);
-                imageView.setPreserveRatio(false);
+                // 1. KATEGORİ ROZETİ (Badge)
+                Label categoryBadge = new Label(category);
+                categoryBadge.setStyle("-fx-background-color: #f3e8ff; -fx-text-fill: #7e22ce; " +
+                        "-fx-padding: 4 10; -fx-background-radius: 20; -fx-font-size: 10px; -fx-font-weight: bold;");
 
-                if (imageUrl != null && !imageUrl.isEmpty()) {
-                    imageView.setImage(new javafx.scene.image.Image(imageUrl, true));
-                } else {
-                    // Resim yoksa varsayılan bir görsel koyalım
-                    imageView.setImage(new javafx.scene.image.Image("https://via.placeholder.com/250x150?text=Gorsel+Yok"));
-                }
-
-                // 2. İÇERİK ALANI (Padding ekliyoruz)
-                VBox content = new VBox(8);
-                content.setStyle("-fx-padding: 15;");
-
+                // 2. BAŞLIK VE AÇIKLAMA
                 Label nameLbl = new Label(name);
-                nameLbl.setStyle("-fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: #1f2937;");
+                nameLbl.setStyle("-fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: #111827;");
 
                 Label descLbl = new Label(desc);
                 descLbl.setWrapText(true);
-                descLbl.setMaxHeight(60);
-                descLbl.setStyle("-fx-text-fill: #6b7280; -fx-font-size: 12px;");
+                descLbl.setMaxHeight(50);
+                descLbl.setStyle("-fx-text-fill: #4b5563; -fx-font-size: 13px;");
 
-                // 3. PUANLAMA (Yıldız Efekti)
-                Label ratingLbl = new Label("⭐ 4.5 / 5"); // Şimdilik statik, Yasemin'den çekebiliriz
+                // 3. ALT BİLGİ (Puan ve Buton)
+                HBox footer = new HBox(10);
+                footer.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+
+                Label ratingLbl = new Label("⭐ 4.8");
                 ratingLbl.setStyle("-fx-font-weight: bold; -fx-text-fill: #f59e0b;");
 
-                // 4. AKSİYON BUTONU
-                javafx.scene.control.Button addPlanBtn = new javafx.scene.control.Button("+ Planıma Ekle");
-                addPlanBtn.setMaxWidth(Double.MAX_VALUE);
-                addPlanBtn.setStyle("-fx-background-color: #8b5cf6; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-radius: 8; -fx-padding: 8;");
-                addPlanBtn.setOnAction(e -> openPlanModal(placeId, name));
+                Region spacer = new Region();
+                HBox.setHgrow(spacer, Priority.ALWAYS);
 
-                content.getChildren().addAll(nameLbl, ratingLbl, descLbl, addPlanBtn);
-                card.getChildren().addAll(imageView, content);
+                Button addBtn = new Button("+ Plan");
+                addBtn.setStyle("-fx-background-color: #8b5cf6; -fx-text-fill: white; -fx-background-radius: 8; -fx-cursor: hand;");
+                addBtn.setOnAction(e -> openPlanModal(placeId, name));
 
+                footer.getChildren().addAll(ratingLbl, spacer, addBtn);
+
+                // Kartın üzerine tıklandığında detayları aç (Pencere)
+                card.setOnMouseClicked(e -> {
+                    if (e.getClickCount() == 1) showPlaceFullDetail(placeObj);
+                });
+
+                card.getChildren().addAll(categoryBadge, nameLbl, descLbl, footer);
                 placesContainer.getChildren().add(card);
             }
         } catch (Exception e) {

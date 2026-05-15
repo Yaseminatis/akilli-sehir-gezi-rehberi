@@ -121,144 +121,95 @@ public class GeziBacakendClient {
      * GET - Tüm mekanları getir (ApiResponse wrapper ile)
      */
     public static String getAllPlaces() throws Exception {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/places"))
-                .GET()
-                .build();
-
-        HttpResponse<String> response = client.send(request,
-                HttpResponse.BodyHandlers.ofString());
-
-        return response.body();
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(BASE_URL + "/places")).GET().build();
+        return client.send(request, HttpResponse.BodyHandlers.ofString()).body();
     }
 
-    /**
-     * GET - Şehre ait mekanları getir
-     */
     public static String getPlacesByCity(Long cityId) throws Exception {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/places/city/" + cityId))
-                .GET()
-                .build();
-
-        HttpResponse<String> response = client.send(request,
-                HttpResponse.BodyHandlers.ofString());
-
-        return response.body();
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(BASE_URL + "/places/city/" + cityId)).GET().build();
+        return client.send(request, HttpResponse.BodyHandlers.ofString()).body();
     }
 
-    /**
-     * GET - Kategoriye göre mekan getir
-     */
     public static String getPlacesByCategory(String category) throws Exception {
         String url = BASE_URL + "/places/category?category=" + category;
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(url))
-                .GET()
-                .build();
-
-        HttpResponse<String> response = client.send(request,
-                HttpResponse.BodyHandlers.ofString());
-
-        return response.body();
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).GET().build();
+        return client.send(request, HttpResponse.BodyHandlers.ofString()).body();
     }
-    // Belirli bir ID'ye sahip mekanın detaylarını SQL'den çeker
+
     public static String getPlaceById(Long id) throws Exception {
-        java.net.http.HttpRequest request = java.net.http.HttpRequest.newBuilder()
-                .uri(java.net.URI.create(BASE_URL + "/places/" + id))
-                .GET()
-                .build();
-        java.net.http.HttpResponse<String> response = client.send(request, java.net.http.HttpResponse.BodyHandlers.ofString());
-        return response.body();
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(BASE_URL + "/places/" + id)).GET().build();
+        return client.send(request, HttpResponse.BodyHandlers.ofString()).body();
     }
 
-    /**
-     * GET - Mekan ara (anahtar kelime ile)
-     */
     public static String searchPlaces(String keyword) throws Exception {
         String encodedKeyword = URLEncoder.encode(keyword, StandardCharsets.UTF_8);
         String url = BASE_URL + "/places/search?keyword=" + encodedKeyword;
-
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(url))
-                .GET()
-                .build();
-
-        HttpResponse<String> response = client.send(request,
-                HttpResponse.BodyHandlers.ofString());
-
-        return response.body();
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).GET().build();
+        return client.send(request, HttpResponse.BodyHandlers.ofString()).body();
     }
 
-    /**
-     * POST - Yeni mekan oluştur
-     */
-    public static String createPlace(String name, String description, String category, Long cityId)
-            throws Exception {
+    public static String createPlace(String name, String description, String category, Long cityId) throws Exception {
         String jsonBody = String.format("""
-            {
-                "name": "%s",
-                "description": "%s",
-                "category": "%s",
-                "cityId": %d
-            }
-            """, name, description, category, cityId);
+        {
+            "name": "%s",
+            "description": "%s",
+            "category": "%s",
+            "cityId": %d
+        }
+        """, name, description, category, cityId);
 
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/places"))
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(BASE_URL + "/places"))
                 .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
-                .header("Content-Type", "application/json")
-                .build();
+                .header("Content-Type", "application/json").build();
+        return client.send(request, HttpResponse.BodyHandlers.ofString()).body();
+    }
 
-        HttpResponse<String> response = client.send(request,
-                HttpResponse.BodyHandlers.ofString());
+    // (Not: Güncelleme ve Silme işlemleri için bizim yazdığımız PUT ve DELETE metotları burada kalmalı)
+    public static String updatePlace(Long placeId, String name, String description, String category, Long cityId) throws Exception {
+        String jsonBody = String.format("""
+        {
+            "name": "%s",
+            "description": "%s",
+            "category": "%s",
+            "cityId": %d
+        }
+        """, name, description, category, cityId);
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(BASE_URL + "/places/" + placeId))
+                .PUT(HttpRequest.BodyPublishers.ofString(jsonBody))
+                .header("Content-Type", "application/json").build();
+        return client.send(request, HttpResponse.BodyHandlers.ofString()).body();
+    }
 
-        return response.body();
+    public static int deletePlace(Long placeId) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(BASE_URL + "/places/" + placeId)).DELETE().build();
+        return client.send(request, HttpResponse.BodyHandlers.ofString()).statusCode();
     }
 
     /**
      * POST - Puan ekle (1-5 arası)
      */
-    public static String createRating(Integer score, Long userId, Long placeId)
-            throws Exception {
-        // Validasyon: puan 1-5 arası
+    public static String createRating(Integer score, Long userId, Long placeId) throws Exception {
         if (score < 1 || score > 5) {
             throw new IllegalArgumentException("Puan 1-5 arası olmalı");
         }
-
         String jsonBody = String.format("""
-            {
-                "score": %d,
-                "userId": %d,
-                "placeId": %d
-            }
-            """, score, userId, placeId);
+        {
+            "score": %d,
+            "userId": %d,
+            "placeId": %d
+        }
+        """, score, userId, placeId);
 
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/ratings"))
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(BASE_URL + "/ratings"))
                 .POST(HttpRequest.BodyPublishers.ofString(jsonBody))
-                .header("Content-Type", "application/json")
-                .build();
-
-        HttpResponse<String> response = client.send(request,
-                HttpResponse.BodyHandlers.ofString());
-
-        System.out.println("Status: " + response.statusCode());
-        return response.body();
+                .header("Content-Type", "application/json").build();
+        return client.send(request, HttpResponse.BodyHandlers.ofString()).body();
     }
 
-    /**
-     * GET - Mekanın puanlarını getir
-     */
     public static String getRatingsByPlace(Long placeId) throws Exception {
-        java.net.http.HttpRequest request = java.net.http.HttpRequest.newBuilder()
-                .uri(java.net.URI.create(BASE_URL + "/ratings/place/" + placeId))
-                .GET()
-                .build();
-        return client.send(request, java.net.http.HttpResponse.BodyHandlers.ofString()).body();
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(BASE_URL + "/ratings/place/" + placeId)).GET().build();
+        return client.send(request, HttpResponse.BodyHandlers.ofString()).body();
     }
-
     /**
      * POST - Kullanıcı oluştur
      */

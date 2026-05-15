@@ -43,7 +43,7 @@
             <VBox spacing="10">
                 <Label fx:id="modalPlaceName" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
                 <Label fx:id="modalPlaceCategory" style="-fx-text-fill: #8b5cf6; -fx-font-weight: bold;"/>
-                <ScrollPane prefHeight="150" style="-fx-background-color: transparent;">
+                <ScrollPane prefHeight="150" fitToWidth="true" style="-fx-background-color: transparent;">
                     <Label fx:id="modalPlaceLongDesc" wrapText="true" style="-fx-text-fill: #4b5563; -fx-font-size: 14px;"/>
                 </ScrollPane>
             </VBox>
