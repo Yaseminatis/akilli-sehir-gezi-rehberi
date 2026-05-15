@@ -275,30 +275,21 @@ public class GeziBacakendClient {
     public static String addFavorite(Long userId, Long placeId) throws Exception {
         String url = BASE_URL + "/nosql/favorites?userId=" + userId + "&placeId=" + placeId;
 
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(url))
-                .POST(HttpRequest.BodyPublishers.ofString(""))
+        java.net.http.HttpRequest request = java.net.http.HttpRequest.newBuilder()
+                .uri(java.net.URI.create(url))
+                .POST(java.net.http.HttpRequest.BodyPublishers.ofString(""))
                 .build();
 
-        HttpResponse<String> response = client.send(request,
-                HttpResponse.BodyHandlers.ofString());
-
-        return response.body();
+        return client.send(request, java.net.http.HttpResponse.BodyHandlers.ofString()).body();
     }
 
-    /**
-     * GET - Kullanıcının favorilerini getir (MongoDB)
-     */
     public static String getFavoritesByUser(Long userId) throws Exception {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(BASE_URL + "/nosql/favorites/user/" + userId))
+        java.net.http.HttpRequest request = java.net.http.HttpRequest.newBuilder()
+                .uri(java.net.URI.create(BASE_URL + "/nosql/favorites/user/" + userId))
                 .GET()
                 .build();
 
-        HttpResponse<String> response = client.send(request,
-                HttpResponse.BodyHandlers.ofString());
-
-        return response.body();
+        return client.send(request, java.net.http.HttpResponse.BodyHandlers.ofString()).body();
     }
 
     /**

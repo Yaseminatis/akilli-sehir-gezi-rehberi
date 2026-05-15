@@ -8,7 +8,7 @@
 
     <HBox alignment="CENTER_LEFT" spacing="20">
         <Button text="← Ana Sayfaya Dön" onAction="#goBack" styleClass="back-button"/>
-        <Label text="⭐ Favori Mekanlarım (NoSQL)" styleClass="title-text"/>
+        <Label text="⭐ Favori Mekanlarım" styleClass="title-text"/>
     </HBox>
 
     <Separator />

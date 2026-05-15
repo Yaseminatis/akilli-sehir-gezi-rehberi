@@ -31,7 +31,6 @@ public class LoginController {
 
         try {
             String response = GeziBacakendClient.getUserByEmail(email);
-            System.out.println("🚨 BACKEND'DEN GELEN CEVAP: '" + response + "'");
 
             // 1. KURŞUN GEÇİRMEZ KONTROL: Backend boş mu döndü? (Hatanın sebebi burasıydı)
             if (response == null || response.trim().isEmpty()) {

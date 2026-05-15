@@ -109,7 +109,6 @@ public class MainController {
                         e.printStackTrace();
                     }
                 });
-                System.out.println("URL: " + city.getImageUrl());
                 cityContainer.getChildren().add(card);
             }
         } catch (Exception e) {
