@@ -32,13 +32,11 @@ public class LoginController {
         try {
             String response = GeziBacakendClient.getUserByEmail(email);
 
-            // 1. KURŞUN GEÇİRMEZ KONTROL: Backend boş mu döndü? (Hatanın sebebi burasıydı)
             if (response == null || response.trim().isEmpty()) {
                 errorLabel.setText("Hata: Bu e-posta ile kayıtlı kullanıcı bulunamadı (Veritabanı boş olabilir).");
                 return;
             }
 
-            // 2. Yanıt gerçekten bir JSON mu?
             com.google.gson.JsonElement parsedElement = com.google.gson.JsonParser.parseString(response);
             if (!parsedElement.isJsonObject()) {
                 errorLabel.setText("Hata: Sunucudan geçersiz bir yanıt geldi.");
@@ -48,14 +46,12 @@ public class LoginController {
             com.google.gson.JsonObject rootJson = parsedElement.getAsJsonObject();
             com.google.gson.JsonObject userJson = null;
 
-            // 3. Yasemin'in kutusunu aç
             if (rootJson.has("data") && !rootJson.get("data").isJsonNull()) {
                 userJson = rootJson.getAsJsonObject("data");
             } else {
                 userJson = rootJson;
             }
 
-            // 4. Şifreyi kontrol et
             if (userJson != null && userJson.has("id")) {
                 String dbPassword = userJson.has("password") && !userJson.get("password").isJsonNull() ? userJson.get("password").getAsString() : "";
 
@@ -82,7 +78,7 @@ public class LoginController {
         Parent root = loader.load();
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
 
-        // Pencere boyutunu ana sayfa için uygun hale getir
+
         Scene scene = new Scene(root, 800, 600);
         stage.setScene(scene);
         stage.centerOnScreen();

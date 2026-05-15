@@ -2,28 +2,33 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.image.ImageView?>
-
 <?import javafx.collections.FXCollections?>
-<?import java.lang.Integer?>
 <?import java.lang.String?>
-<StackPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.DetailController" style="-fx-background-color: #f3f4f6;">
 
-    <VBox spacing="20">
-        <padding><Insets top="20" right="30" bottom="20" left="30"/></padding>
+<?import java.lang.Integer?>
+<StackPane stylesheets="@style.css" style="-fx-background-color: #f3f4f6;" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.DetailController">
 
-        <HBox spacing="15" alignment="CENTER_LEFT">
-            <Button text="⬅ Geri Dön" onAction="#goBack" style="-fx-background-color: #6b7280; -fx-text-fill: white; -fx-cursor: hand;"/>
-            <Label fx:id="cityNameLabel" text="Şehir Adı" style="-fx-font-size: 28px; -fx-font-weight: bold;"/>
+    <VBox spacing="15" alignment="TOP_CENTER">
+
+        <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-padding: 15 30; -fx-background-color: white; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, 2);">
+            <Button text="← Ana Sayfaya Dön" onAction="#goBack" prefHeight="35" style="-fx-background-color: #6b7280; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-cursor: hand;"/>
+            <Separator orientation="VERTICAL" prefHeight="35"/>
+            <Label fx:id="cityNameLabel" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #111827;"/>
+
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <Label fx:id="cityDescLabel" wrapText="true" maxWidth="350" style="-fx-font-size: 14px; -fx-text-fill: #4b5563; -fx-font-style: italic; -fx-background-color: #f9fafb; -fx-padding: 8 15; -fx-background-radius: 8; -fx-border-color: #e5e7eb; -fx-border-radius: 8;"/>
         </HBox>
 
-        <Label fx:id="cityDescLabel" text="Şehir açıklaması buraya gelecek..." wrapText="true" style="-fx-text-fill: #4b5563;"/>
-        <Separator/>
+        <HBox alignment="CENTER_LEFT" style="-fx-padding: 10 30;">
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <TextField fx:id="searchField" promptText="Mekan ara..." prefWidth="250" prefHeight="35" style="-fx-background-radius: 8;"/>
+                <Button text="🔍 Ara" onAction="#handleSearch" prefHeight="35" style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;"/>
+            </HBox>
 
-        <Label text="📍 Bu Şehirdeki Görülecek Mekanlar" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
-        <HBox spacing="15" alignment="CENTER_LEFT" style="-fx-padding: 10;">
-            <TextField fx:id="searchField" promptText="Mekan ara..." prefWidth="200" style="-fx-background-radius: 15;"/>
-            <ComboBox fx:id="categoryFilterCombo" promptText="Kategori Seç" prefWidth="150" style="-fx-background-radius: 15;">
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <ComboBox fx:id="categoryFilterCombo" promptText="Kategori Seç" prefWidth="160" prefHeight="35" style="-fx-background-radius: 8;">
                 <items>
                     <FXCollections fx:factory="observableArrayList">
                         <String fx:value="TÜMÜ"/>
@@ -35,52 +40,61 @@
                     </FXCollections>
                 </items>
             </ComboBox>
-            <Button text="🔍 Ara" onAction="#handleSearch" style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-background-radius: 15; -fx-cursor: hand;"/>
         </HBox>
-        <ScrollPane fitToWidth="true" style="-fx-background: transparent; -fx-background-color: transparent;">
-            <FlowPane fx:id="placesContainer" hgap="15" vgap="15"/>
+
+        <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" style="-fx-background-color: transparent; -fx-background: transparent; -fx-padding: 0 30 30 30;">
+            <FlowPane fx:id="placesContainer" hgap="25" vgap="25" alignment="TOP_LEFT" />
         </ScrollPane>
+
     </VBox>
 
-    <VBox fx:id="planModal" visible="false" alignment="CENTER" style="-fx-background-color: rgba(0,0,0,0.5);">
-        <VBox spacing="15" maxWidth="350" style="-fx-background-color: white; -fx-padding: 30; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 20, 0, 0, 0);">
-            <Label text="🗺️ Hangi Plana Eklensin?" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
-            <Label fx:id="selectedPlaceLabel" text="Mekan Adı" style="-fx-text-fill: #6b7280;"/>
+    <VBox fx:id="placeDetailModal" visible="false" alignment="CENTER" style="-fx-background-color: rgba(0,0,0,0.6);">
+        <VBox spacing="15" alignment="TOP_LEFT" maxWidth="450" style="-fx-background-color: white; -fx-padding: 25; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 20, 0, 0, 10);">
 
-            <ComboBox fx:id="planComboBox" promptText="Bir plan seçin..." prefWidth="300" style="-fx-background-color: #f3f4f6; -fx-border-color: #d1d5db; -fx-border-radius: 5;"/>
+            <Label fx:id="modalPlaceName" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #111827;" wrapText="true"/>
+            <Label fx:id="modalPlaceCategory" style="-fx-font-weight: bold; -fx-text-fill: #8b5cf6;"/>
+            <Label fx:id="modalPlaceLongDesc" wrapText="true" style="-fx-text-fill: #4b5563; -fx-font-size: 14px; -fx-padding: 5 0 15 0;"/>
 
-            <HBox spacing="10" alignment="CENTER_RIGHT" style="-fx-padding: 10 0 0 0;">
-                <Button text="İptal" onAction="#closeModal" style="-fx-background-color: transparent; -fx-text-fill: #6b7280; -fx-cursor: hand;"/>
-                <Button text="Planıma Kaydet" fx:id="saveToPlanBtn" onAction="#saveToPlan" style="-fx-background-color: #10b981; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-background-radius: 5;"/>
+            <HBox spacing="15" alignment="CENTER_LEFT" style="-fx-padding: 15; -fx-background-color: #f9fafb; -fx-background-radius: 10;">
+                <Label text="Puanınız:" style="-fx-font-weight: bold;"/>
+                <ComboBox fx:id="ratingCombo" prefWidth="70">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <Integer fx:value="5"/><Integer fx:value="4"/><Integer fx:value="3"/><Integer fx:value="2"/><Integer fx:value="1"/>
+                        </FXCollections>
+                    </items>
+                </ComboBox>
+                <Button fx:id="submitRatingBtn" text="⭐ Gönder" onAction="#submitRating" style="-fx-background-color: #f59e0b; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;"/>
+            </HBox>
+
+            <HBox alignment="CENTER_RIGHT">
+                <Button text="Kapat" onAction="#closePlaceDetailModal" prefWidth="100" style="-fx-background-color: #6b7280; -fx-text-fill: white; -fx-font-weight: bold;"/>
             </HBox>
         </VBox>
     </VBox>
-    <VBox fx:id="placeDetailModal" visible="false" alignment="CENTER" style="-fx-background-color: rgba(0,0,0,0.7);">
-        <VBox spacing="20" maxWidth="500" style="-fx-background-color: white; -fx-padding: 30; -fx-background-radius: 15;">
-            <ImageView fx:id="modalPlaceImage" fitWidth="440" fitHeight="250" preserveRatio="false" style="-fx-background-radius: 10;"/>
-            <VBox spacing="10">
-                <Label fx:id="modalPlaceName" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
-                <Label fx:id="modalPlaceCategory" style="-fx-text-fill: #8b5cf6; -fx-font-weight: bold;"/>
-                <ScrollPane prefHeight="150" fitToWidth="true" style="-fx-background-color: transparent;">
-                    <Label fx:id="modalPlaceLongDesc" wrapText="true" style="-fx-text-fill: #4b5563; -fx-font-size: 14px;"/>
-                </ScrollPane>
-                <HBox spacing="15" alignment="CENTER_LEFT" style="-fx-padding: 15; -fx-background-color: #f9fafb; -fx-background-radius: 10;">
-                    <Label text="Bu mekana puan verin:" style="-fx-font-weight: bold;"/>
-                    <ComboBox fx:id="ratingCombo" prefWidth="70">
-                        <items>
-                            <FXCollections fx:factory="observableArrayList">
-                                <Integer fx:value="5"/>
-                                <Integer fx:value="4"/>
-                                <Integer fx:value="3"/>
-                                <Integer fx:value="2"/>
-                                <Integer fx:value="1"/>
-                            </FXCollections>
-                        </items>
-                    </ComboBox>
-                    <Button text="⭐ Puanı Gönder" fx:id="submitRatingBtn" onAction="#submitRating" style="-fx-background-color: #f59e0b; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;"/>
-                </HBox>
-            </VBox>
-            <Button text="Kapat" onAction="#closePlaceDetailModal" style="-fx-background-color: #6b7280; -fx-text-fill: white; -fx-width: 100%; -fx-cursor: hand;"/>
+
+    <VBox fx:id="planModal" visible="false" alignment="CENTER" style="-fx-background-color: rgba(0,0,0,0.5);">
+        <VBox spacing="15" alignment="CENTER" maxWidth="400" style="-fx-background-color: white; -fx-padding: 25; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 20, 0, 0, 10);">
+            <Label text="📌 Hangi Plana Eklensin?" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #111827;"/>
+            <Label fx:id="selectedPlaceLabel" textAlignment="CENTER" wrapText="true" style="-fx-text-fill: #6b7280;"/>
+            <ComboBox fx:id="planComboBox" promptText="Bir plan seçin..." prefWidth="300" style="-fx-background-radius: 6;"/>
+            <HBox spacing="10" alignment="CENTER">
+                <Button text="İptal" onAction="#closeModal" style="-fx-background-color: white; -fx-text-fill: #4b5563; -fx-border-color: #d1d5db; -fx-border-radius: 6; -fx-cursor: hand;"/>
+                <Button fx:id="saveToPlanBtn" text="Planıma Kaydet" onAction="#saveToPlan" style="-fx-background-color: #10b981; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-cursor: hand;"/>
+            </HBox>
         </VBox>
     </VBox>
+
+    <VBox fx:id="newPlanModal" visible="false" alignment="CENTER" style="-fx-background-color: rgba(0,0,0,0.5);">
+        <VBox spacing="15" alignment="CENTER" maxWidth="400" style="-fx-background-color: white; -fx-padding: 25; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 20, 0, 0, 10);">
+            <Label text="✨ Yeni Plan Oluştur" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #111827;"/>
+            <Label text="Yeni gezi planınızın adını girin:" style="-fx-text-fill: #4b5563;"/>
+            <TextField fx:id="newPlanNameField" promptText="Örn: Hafta Sonu Kaçamağı" prefHeight="35" prefWidth="300" style="-fx-background-radius: 6;"/>
+            <HBox spacing="10" alignment="CENTER">
+                <Button text="Geri Dön" onAction="#closeNewPlanModal" style="-fx-background-color: white; -fx-text-fill: #4b5563; -fx-border-color: #d1d5db; -fx-border-radius: 6; -fx-cursor: hand;"/>
+                <Button text="Oluştur ve Kaydet" onAction="#createNewPlanAndSave" style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-cursor: hand;"/>
+            </HBox>
+        </VBox>
+    </VBox>
+
 </StackPane>

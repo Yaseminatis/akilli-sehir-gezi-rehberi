@@ -3,17 +3,18 @@
 <?import javafx.scene.control.*?>
 <?import javafx.geometry.Insets?>
 
-<VBox spacing="20" alignment="TOP_CENTER" stylesheets="@style.css" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.FavoritesController">
-    <padding><Insets top="40" right="60" bottom="40" left="60"/></padding>
+<VBox stylesheets="@style.css" style="-fx-background-color: #f3f4f6;" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.FavoritesController">
 
-    <HBox alignment="CENTER_LEFT" spacing="20">
-        <Button text="← Ana Sayfaya Dön" onAction="#goBack" styleClass="back-button"/>
-        <Label text="⭐ Favori Mekanlarım" styleClass="title-text"/>
+    <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-padding: 15 30; -fx-background-color: white; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, 2);">
+        <Button text="← Ana Sayfaya Dön" onAction="#goBack" prefHeight="35" style="-fx-background-color: #6b7280; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-cursor: hand;"/>
+
+        <Separator orientation="VERTICAL" prefHeight="35"/>
+
+        <Label text="★ Favori Mekanlarım" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #111827;"/>
     </HBox>
 
-    <Separator />
-
-    <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;">
-        <VBox fx:id="favoritesContainer" spacing="15" alignment="TOP_CENTER" />
+    <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" style="-fx-background-color: transparent; -fx-background: transparent; -fx-padding: 20 30;">
+        <VBox fx:id="favoritesContainer" spacing="15" alignment="TOP_CENTER" maxWidth="900" style="-fx-margin: auto;"/>
     </ScrollPane>
+
 </VBox>

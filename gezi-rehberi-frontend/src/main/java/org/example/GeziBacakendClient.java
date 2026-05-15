@@ -164,7 +164,6 @@ public class GeziBacakendClient {
         return client.send(request, HttpResponse.BodyHandlers.ofString()).body();
     }
 
-    // (Not: Güncelleme ve Silme işlemleri için bizim yazdığımız PUT ve DELETE metotları burada kalmalı)
     public static String updatePlace(Long placeId, String name, String description, String category, Long cityId) throws Exception {
         String jsonBody = String.format("""
         {
@@ -295,7 +294,7 @@ public class GeziBacakendClient {
     /**
      * POST - Gezi planı oluştur (MongoDB)
      */
-// Belirli bir şehre ait mekanları çeker
+
     public static String getPlacesByCityId(Long cityId) throws Exception {
         java.net.http.HttpRequest request = java.net.http.HttpRequest.newBuilder()
                 .uri(java.net.URI.create(BASE_URL + "/places/city/" + cityId))
@@ -304,7 +303,7 @@ public class GeziBacakendClient {
         return client.send(request, java.net.http.HttpResponse.BodyHandlers.ofString()).body();
     }
 
-    // Kullanıcının Gezi Planlarını Çeker
+
     public static String getTravelPlansByUser(Long userId) throws Exception {
         java.net.http.HttpRequest request = java.net.http.HttpRequest.newBuilder()
                 .uri(java.net.URI.create(BASE_URL + "/nosql/travel-plans/user/" + userId))
@@ -313,7 +312,7 @@ public class GeziBacakendClient {
         return client.send(request, java.net.http.HttpResponse.BodyHandlers.ofString()).body();
     }
 
-    // Yeni Gezi Planı Oluşturma
+
     public static String createTravelPlan(Long userId, String title, java.util.List<Long> placeIds) throws Exception {
         com.google.gson.JsonArray placesArray = new com.google.gson.JsonArray();
         for (Long id : placeIds) { placesArray.add(id); }
@@ -331,7 +330,7 @@ public class GeziBacakendClient {
         return client.send(request, java.net.http.HttpResponse.BodyHandlers.ofString()).body();
     }
 
-    // ID'ye Göre Tek Bir Planı Getirme
+
     public static String getPlanById(String planId) throws Exception {
         java.net.http.HttpRequest request = java.net.http.HttpRequest.newBuilder()
                 .uri(java.net.URI.create(BASE_URL + "/nosql/travel-plans/" + planId))
@@ -340,7 +339,7 @@ public class GeziBacakendClient {
         return client.send(request, java.net.http.HttpResponse.BodyHandlers.ofString()).body();
     }
 
-    // Planı Güncelleme
+
     public static String updatePlan(String planId, String jsonBody) throws Exception {
         java.net.http.HttpRequest request = java.net.http.HttpRequest.newBuilder()
                 .uri(java.net.URI.create(BASE_URL + "/nosql/travel-plans/" + planId))
@@ -381,7 +380,6 @@ public class GeziBacakendClient {
 
             System.out.println("\n=== Yeni Mekan Oluştur ===");
 
-            // 1L: Şehir ID'si (Örn: İzmir), "HISTORICAL_SITE" ve "PARK" ise zorunlu kategori isimleri
             String place1 = createPlace("Tarihi Saat Kulesi", "Şehrin en bilinen tarihi simgesi.", "HISTORICAL_SITE", 1L);
             System.out.println("Eklenen Mekan 1: " + place1);
 

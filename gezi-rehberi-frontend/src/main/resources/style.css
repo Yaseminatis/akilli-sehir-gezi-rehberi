@@ -1,61 +1,60 @@
+
 .root {
     -fx-background-color: #f3f4f6;
-    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-font-family: "Segoe UI", Helvetica, Arial, sans-serif;
 }
 
+
+.button {
+    -fx-background-color: #3b82f6;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8px;
+    -fx-padding: 8px 16px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(59, 130, 246, 0.3), 5, 0, 0, 3);
+    -fx-transition: all 0.2s;
+}
+
+
+.button:hover {
+    -fx-background-color: #2563eb;
+    -fx-effect: dropshadow(gaussian, rgba(37, 99, 235, 0.4), 8, 0, 0, 4);
+}
+
+
+.text-field, .combo-box {
+    -fx-background-color: white;
+    -fx-border-color: #d1d5db;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-padding: 6px 10px;
+}
+
+.text-field:focused, .combo-box:focused {
+    -fx-border-color: #3b82f6;
+    -fx-border-width: 2px;
+}
+
+
+.card {
+    -fx-background-color: white;
+    -fx-background-radius: 12px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.08), 10, 0, 0, 4);
+}
+
+.card:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.15), 15, 0, 0, 6);
+}
 .city-card {
     -fx-background-color: white;
-    -fx-background-radius: 12;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 4);
-    -fx-padding: 15;
-    -fx-spacing: 10;
-    -fx-cursor: hand;
+    -fx-background-radius: 15px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0, 0, 4);
 }
 
 .city-card:hover {
-    -fx-background-color: #f9fafb;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 15, 0, 0, 6);
-}
-
-.title-text {
-    -fx-font-size: 24px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #1f2937;
-}
-
-.card-title {
-    -fx-font-size: 18px;
-    -fx-font-weight: bold;
-    -fx-text-fill: #374151;
-}
-/* Geri Dön Butonu */
-.back-button {
-    -fx-background-color: #ffffff;
-    -fx-text-fill: #374151;
-    -fx-border-color: #d1d5db;
-    -fx-border-radius: 8;
-    -fx-background-radius: 8;
-    -fx-padding: 8 16;
+    -fx-scale-x: 1.04;
+    -fx-scale-y: 1.04;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.20), 15, 0, 0, 8);
     -fx-cursor: hand;
-    -fx-font-weight: bold;
-}
-
-.back-button:hover {
-    -fx-background-color: #f3f4f6;
-}
-
-/* Şehir Açıklaması */
-.description-text {
-    -fx-font-size: 16px;
-    -fx-text-fill: #4b5563;
-    -fx-line-spacing: 1.5;
-}
-
-/* Mekan Kartı (Daha sonra eklenecek mekanlar için) */
-.place-card {
-    -fx-background-color: white;
-    -fx-background-radius: 10;
-    -fx-padding: 15;
-    -fx-spacing: 5;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 8, 0, 0, 2);
 }

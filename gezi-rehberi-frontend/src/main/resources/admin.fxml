@@ -5,78 +5,81 @@
 <?import javafx.collections.FXCollections?>
 <?import java.lang.String?>
 
-<VBox spacing="20" style="-fx-background-color: #f9fafb;" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.AdminController">
-    <padding><Insets top="20" right="30" bottom="20" left="30"/></padding>
+<VBox stylesheets="@style.css" style="-fx-background-color: #f3f4f6;" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.AdminController">
 
-    <HBox alignment="CENTER_LEFT" spacing="20">
-        <Button text="⬅ Ana Sayfaya Dön" onAction="#goBack" style="-fx-background-color: #6b7280; -fx-text-fill: white; -fx-cursor: hand;"/>
-        <Label text="👑 Yönetim Paneli" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #111827;"/>
+    <HBox alignment="CENTER_LEFT" spacing="20" style="-fx-padding: 15 30; -fx-background-color: white; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, 2);">
+        <Button text="← Ana Sayfaya Dön" onAction="#goBack" prefHeight="35" style="-fx-background-color: #6b7280; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-cursor: hand;"/>
+        <Separator orientation="VERTICAL" prefHeight="35"/>
+        <Label text="⚙ Yönetim Paneli" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #111827;"/>
     </HBox>
-    <Separator/>
 
     <TabPane tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS" style="-fx-background-color: transparent;">
 
-        <Tab text="Şehir Yönetimi">
-            <HBox spacing="20" style="-fx-padding: 20;">
+        <Tab text="Şehir Yönetimi" style="-fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 5 20;">
+            <HBox spacing="25" style="-fx-padding: 25 30;">
 
                 <VBox spacing="10" prefWidth="280">
-                    <Label text="Kayıtlı Şehirler" style="-fx-font-weight: bold; -fx-text-fill: #374151;"/>
-                    <ListView fx:id="cityListView" VBox.vgrow="ALWAYS" style="-fx-background-radius: 5;"/>
-                    <Button text="➕ Yeni Şehir Ekle (Formu Temizle)" onAction="#clearCityForm" maxWidth="Infinity" style="-fx-background-color: #4b5563; -fx-text-fill: white; -fx-cursor: hand;"/>
+                    <Label text="Kayıtlı Şehirler" style="-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: #374151;"/>
+                    <ListView fx:id="cityListView" VBox.vgrow="ALWAYS" style="-fx-background-radius: 8; -fx-border-color: #d1d5db; -fx-border-radius: 8; -fx-padding: 5;"/>
+                    <Button text="+ Yeni Şehir Ekle (Formu Temizle)" onAction="#clearCityForm" prefHeight="40" maxWidth="Infinity" style="-fx-background-color: #4b5563; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-cursor: hand;"/>
                 </VBox>
 
-                <VBox spacing="15" HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-padding: 25; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 5);">
-                    <Label text="Şehir Detayları" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
-                    <Label fx:id="cityMessageLabel" style="-fx-font-weight: bold;"/>
+                <VBox spacing="15" HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-padding: 30; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0, 0, 4);">
+                    <Label text="Şehir Detayları" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #111827;"/>
+                    <Label fx:id="cityMessageLabel" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
 
-                    <TextField fx:id="cityNameField" promptText="Şehir Adı"/>
-                    <TextField fx:id="cityCountryField" promptText="Ülke"/>
-                    <TextField fx:id="cityImageField" promptText="Görsel URL"/>
-                    <TextArea fx:id="cityDescArea" promptText="Açıklama..." prefRowCount="5" wrapText="true"/>
+                    <TextField fx:id="cityNameField" promptText="Şehir Adı (Örn: Ankara)" prefHeight="45" style="-fx-font-size: 14px; -fx-background-radius: 8;"/>
+                    <TextField fx:id="cityCountryField" promptText="Ülke (Örn: Türkiye)" prefHeight="45" style="-fx-font-size: 14px; -fx-background-radius: 8;"/>
+                    <TextField fx:id="cityImageField" promptText="Görsel URL (Örn: https://resim-linki.jpg)" prefHeight="45" style="-fx-font-size: 14px; -fx-background-radius: 8;"/>
+                    <TextArea fx:id="cityDescArea" promptText="Şehir hakkında açıklama..." prefRowCount="6" wrapText="true" style="-fx-font-size: 14px; -fx-background-radius: 8; -fx-border-color: #d1d5db; -fx-border-radius: 8;"/>
 
-                    <HBox spacing="10">
-                        <Button fx:id="btnSaveCity" text="Kaydet" onAction="#saveCity" prefWidth="100" style="-fx-background-color: #10b981; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;"/>
-                        <Button fx:id="btnUpdateCity" text="Güncelle" onAction="#updateCity" disable="true" prefWidth="100" style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;"/>
-                        <Button fx:id="btnDeleteCity" text="Sil" onAction="#deleteCity" disable="true" prefWidth="100" style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;"/>
-                    </HBox>
+                    <Region VBox.vgrow="ALWAYS"/> <HBox spacing="15" alignment="CENTER_RIGHT">
+                    <Button fx:id="btnSaveCity" text="Kaydet" onAction="#saveCity" prefWidth="120" prefHeight="40" style="-fx-background-color: #10b981; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;"/>
+                    <Button fx:id="btnUpdateCity" text="Güncelle" onAction="#updateCity" disable="true" prefWidth="120" prefHeight="40" style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;"/>
+                    <Button fx:id="btnDeleteCity" text="Sil" onAction="#deleteCity" disable="true" prefWidth="120" prefHeight="40" style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;"/>
+                </HBox>
                 </VBox>
             </HBox>
         </Tab>
 
-        <Tab text="Mekan Yönetimi">
-            <HBox spacing="20" style="-fx-padding: 20;">
+        <Tab text="Mekan Yönetimi" style="-fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 5 20;">
+            <HBox spacing="25" style="-fx-padding: 25 30;">
 
                 <VBox spacing="10" prefWidth="280">
-                    <Label text="Kayıtlı Mekanlar" style="-fx-font-weight: bold; -fx-text-fill: #374151;"/>
-                    <ListView fx:id="placeListView" VBox.vgrow="ALWAYS" style="-fx-background-radius: 5;"/>
-                    <Button text="➕ Yeni Mekan Ekle (Formu Temizle)" onAction="#clearPlaceForm" maxWidth="Infinity" style="-fx-background-color: #4b5563; -fx-text-fill: white; -fx-cursor: hand;"/>
+                    <Label text="Kayıtlı Mekanlar" style="-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: #374151;"/>
+                    <ListView fx:id="placeListView" VBox.vgrow="ALWAYS" style="-fx-background-radius: 8; -fx-border-color: #d1d5db; -fx-border-radius: 8; -fx-padding: 5;"/>
+                    <Button text="+ Yeni Mekan Ekle (Formu Temizle)" onAction="#clearPlaceForm" prefHeight="40" maxWidth="Infinity" style="-fx-background-color: #4b5563; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 6; -fx-cursor: hand;"/>
                 </VBox>
 
-                <VBox spacing="15" HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-padding: 25; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 5);">
-                    <Label text="Mekan Detayları" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
-                    <Label fx:id="placeMessageLabel" style="-fx-font-weight: bold;"/>
+                <VBox spacing="15" HBox.hgrow="ALWAYS" style="-fx-background-color: white; -fx-padding: 30; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0, 0, 4);">
+                    <Label text="Mekan Detayları" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #111827;"/>
+                    <Label fx:id="placeMessageLabel" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
 
-                    <TextField fx:id="placeNameField" promptText="Mekan Adı"/>
+                    <TextField fx:id="placeNameField" promptText="Mekan Adı" prefHeight="45" style="-fx-font-size: 14px; -fx-background-radius: 8;"/>
                     <HBox spacing="15">
-                        <ComboBox fx:id="placeCategoryBox" promptText="Kategori Seçin" HBox.hgrow="ALWAYS" maxWidth="Infinity">
-                            <items>
-                                <FXCollections fx:factory="observableArrayList">
-                                    <String fx:value="MUSEUM"/>
-                                    <String fx:value="PARK"/>
-                                    <String fx:value="HISTORICAL_SITE"/>
-                                    <String fx:value="RESTAURANT"/>
-                                    <String fx:value="CAFE"/>
-                                </FXCollections>
-                            </items>
-                        </ComboBox>
-                        <ComboBox fx:id="placeCityBox" promptText="Hangi Şehirde?" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+                        <HBox spacing="15">
+                            <ComboBox fx:id="placeCategoryBox" promptText="Kategori Seçin" prefHeight="45" HBox.hgrow="ALWAYS" maxWidth="Infinity" style="-fx-font-size: 14px; -fx-background-radius: 8;">
+                                <items>
+                                    <FXCollections fx:factory="observableArrayList">
+                                        <String fx:value="MUSEUM"/>
+                                        <String fx:value="PARK"/>
+                                        <String fx:value="HISTORICAL_SITE"/>
+                                        <String fx:value="RESTAURANT"/>
+                                        <String fx:value="CAFE"/>
+                                    </FXCollections>
+                                </items>
+                            </ComboBox>
+                            <ComboBox fx:id="placeCityBox" promptText="Hangi Şehirde?" prefHeight="45" HBox.hgrow="ALWAYS" maxWidth="Infinity" style="-fx-font-size: 14px; -fx-background-radius: 8;"/>
+                        </HBox>
                     </HBox>
-                    <TextArea fx:id="placeDescArea" promptText="Açıklama..." prefRowCount="5" wrapText="true"/>
+                    <TextArea fx:id="placeDescArea" promptText="Mekan Açıklaması..." prefRowCount="6" wrapText="true" style="-fx-font-size: 14px; -fx-background-radius: 8; -fx-border-color: #d1d5db; -fx-border-radius: 8;"/>
 
-                    <HBox spacing="10">
-                        <Button fx:id="btnSavePlace" text="Kaydet" onAction="#savePlace" prefWidth="100" style="-fx-background-color: #8b5cf6; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;"/>
-                        <Button fx:id="btnUpdatePlace" text="Güncelle" onAction="#updatePlace" disable="true" prefWidth="100" style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;"/>
-                        <Button fx:id="btnDeletePlace" text="Sil" onAction="#deletePlace" disable="true" prefWidth="100" style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;"/>
+                    <Region VBox.vgrow="ALWAYS"/>
+
+                    <HBox spacing="15" alignment="CENTER_RIGHT">
+                        <Button fx:id="btnSavePlace" text="Kaydet" onAction="#savePlace" prefWidth="120" prefHeight="40" style="-fx-background-color: #8b5cf6; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;"/>
+                        <Button fx:id="btnUpdatePlace" text="Güncelle" onAction="#updatePlace" disable="true" prefWidth="120" prefHeight="40" style="-fx-background-color: #3b82f6; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;"/>
+                        <Button fx:id="btnDeletePlace" text="Sil" onAction="#deletePlace" disable="true" prefWidth="120" prefHeight="40" style="-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-cursor: hand;"/>
                     </HBox>
                 </VBox>
             </HBox>

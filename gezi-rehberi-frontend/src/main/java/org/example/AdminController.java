@@ -25,7 +25,6 @@ public class AdminController {
     @FXML private Label cityMessageLabel, placeMessageLabel;
     @FXML private Button btnSaveCity, btnUpdateCity, btnDeleteCity, btnSavePlace, btnUpdatePlace, btnDeletePlace;
 
-    // Şehir ve Mekan verilerini tam obje olarak saklıyoruz (ID'lere erişmek için)
     private Map<String, JsonObject> cityDataMap = new HashMap<>();
     private Map<String, JsonObject> placeDataMap = new HashMap<>();
 
@@ -34,23 +33,18 @@ public class AdminController {
 
     @FXML
     public void initialize() {
-        // Sayfa açılırken tüm verileri tek seferde çekiyoruz
         loadAllData();
-
-        // Şehir listesi tıklama dinleyicisi
         cityListView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) fillCityForm(newVal);
         });
 
-        // Mekan listesi tıklama dinleyicisi
         placeListView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) fillPlaceForm(newVal);
         });
     }
-
+  //ADMİN İÇİN BÜTÜN VERİLERİ ÇEKİYORUZ
     private void loadAllData() {
         try {
-            // ŞEHİRLERİ ÇEK (Hem liste hem ComboBox için)
             String cityRes = GeziBacakendClient.getAllCities();
             JsonArray cities = JsonParser.parseString(cityRes).isJsonArray()
                     ? JsonParser.parseString(cityRes).getAsJsonArray()
@@ -65,10 +59,9 @@ public class AdminController {
                 String name = obj.get("name").getAsString();
                 cityDataMap.put(name, obj);
                 cityListView.getItems().add(name);
-                placeCityBox.getItems().add(name); // Mekan ekleme kısmındaki şehirlere ekle
+                placeCityBox.getItems().add(name);
             }
 
-            // MEKANLARI ÇEK
             String placeRes = GeziBacakendClient.getAllPlaces();
             JsonArray places = JsonParser.parseString(placeRes).isJsonArray()
                     ? JsonParser.parseString(placeRes).getAsJsonArray()
@@ -88,7 +81,7 @@ public class AdminController {
             System.out.println("Veri yükleme hatası: " + e.getMessage());
         }
     }
-
+  //ŞEHİR EKLEME FORMU
     private void fillCityForm(String cityName) {
         JsonObject obj = cityDataMap.get(cityName);
         selectedCityId = obj.get("id").getAsLong();
@@ -101,7 +94,7 @@ public class AdminController {
         btnUpdateCity.setDisable(false);
         btnDeleteCity.setDisable(false);
     }
-
+ //MEKAN EKLEME FORMU
     private void fillPlaceForm(String placeName) {
         JsonObject obj = placeDataMap.get(placeName);
         selectedPlaceId = obj.get("id").getAsLong();
@@ -109,7 +102,6 @@ public class AdminController {
         placeCategoryBox.setValue(obj.has("category") ? obj.get("category").getAsString() : null);
         placeDescArea.setText(obj.has("description") && !obj.get("description").isJsonNull() ? obj.get("description").getAsString() : "");
 
-        // Mekanın içindeki cityId'yi kullanarak ComboBox'ta doğru şehri seçiyoruz
         Long cId = obj.get("cityId").getAsLong();
         for (Map.Entry<String, JsonObject> entry : cityDataMap.entrySet()) {
             if (entry.getValue().get("id").getAsLong() == cId) {

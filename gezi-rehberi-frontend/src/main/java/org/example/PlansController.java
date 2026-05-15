@@ -10,7 +10,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
@@ -22,8 +21,6 @@ import javafx.stage.Stage;
 public class PlansController {
 
     @FXML private VBox plansContainer;
-
-    // Modal Bileşenleri
     @FXML private VBox planDetailModal;
     @FXML private Label modalPlanTitle;
     @FXML private VBox modalPlacesContainer;
@@ -34,7 +31,7 @@ public class PlansController {
     }
 
     private void loadUserPlans() {
-        plansContainer.getChildren().clear(); // Önce ekranı temizle
+        plansContainer.getChildren().clear();
 
         try {
             Long userId = SessionManager.getCurrentUserId();
@@ -55,13 +52,12 @@ public class PlansController {
                 JsonArray placesArray = planObj.getAsJsonArray("placeIds");
                 int placeCount = placesArray.size();
 
-                // Plan Kartı Tasarımı
                 HBox card = new HBox(15);
                 card.setStyle("-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);");
                 card.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
 
                 VBox textInfo = new VBox(5);
-                Label titleLabel = new Label("🗺 " + title);
+                Label titleLabel = new Label("⚲ " + title);
                 titleLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: #8b5cf6;");
                 Label countLabel = new Label(placeCount + " mekan eklendi");
                 countLabel.setStyle("-fx-text-fill: #6b7280;");
@@ -70,7 +66,6 @@ public class PlansController {
                 Region spacer = new Region();
                 HBox.setHgrow(spacer, Priority.ALWAYS);
 
-                // Butonlar
                 Button viewBtn = new Button("Görüntüle / Düzenle");
                 viewBtn.setStyle("-fx-background-color: #10b981; -fx-text-fill: white; -fx-cursor: hand;");
                 viewBtn.setOnAction(e -> openPlanDetails(planObj));
@@ -88,20 +83,19 @@ public class PlansController {
         }
     }
 
-    // --- MODAL İŞLEMLERİ ---
+
 
     private void openPlanDetails(JsonObject planObj) {
         String planId = planObj.get("id").getAsString();
         String title = planObj.get("title").getAsString();
         JsonArray placesArray = planObj.getAsJsonArray("placeIds");
 
-        modalPlanTitle.setText("🗺 " + title);
-        modalPlacesContainer.getChildren().clear(); // Önceki mekanları temizle
+        modalPlanTitle.setText("⚲ " + title);
+        modalPlacesContainer.getChildren().clear();
 
         if (placesArray.size() == 0) {
             modalPlacesContainer.getChildren().add(new Label("Bu planda henüz mekan yok."));
         } else {
-            // Her mekan ID'si için backend'e sorup adını öğreniyoruz
             for (int i = 0; i < placesArray.size(); i++) {
                 Long placeId = placesArray.get(i).getAsLong();
 
@@ -114,19 +108,13 @@ public class PlansController {
                     placeRow.setStyle("-fx-padding: 10; -fx-background-color: #f3f4f6; -fx-background-radius: 5;");
                     placeRow.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
 
-                    // --- İŞTE DEĞİŞEN KISIM BURASI ---
-                    // Normal Label yerine, tıklanabilir bir Hyperlink oluşturuyoruz
                     javafx.scene.control.Hyperlink nameLink = new javafx.scene.control.Hyperlink("" + placeName);
                     nameLink.setStyle("-fx-font-weight: bold; -fx-text-fill: #1f2937; -fx-underline: false;");
 
-                    // Linke tıklandığında mekan detaylarını içeren şık bir bilgi kutusu (Alert) açıyoruz
-                    nameLink.setOnAction(e -> {
-                        // Zaten var olan gizli "planDetailModal" içindeki yazıları değiştiriyoruz
-                        // Not: Eğer PlansController'da bu Label'ları tanımlamadıysan, en üste eklemeyi unutma!
-                        modalPlanTitle.setText("📍 " + placeName);
-                        modalPlacesContainer.getChildren().clear(); // İçini temizle
 
-                        // Şık bir içerik oluştur
+                    nameLink.setOnAction(e -> {
+                        modalPlanTitle.setText("⚲ " + placeName);
+                        modalPlacesContainer.getChildren().clear();
                         String category = placeData.has("category") ? placeData.get("category").getAsString() : "Kategori Yok";
                         String desc = placeData.has("description") && !placeData.get("description").isJsonNull()
                                 ? placeData.get("description").getAsString()
@@ -141,18 +129,14 @@ public class PlansController {
 
                         modalPlacesContainer.getChildren().addAll(catLabel, descLabel);
                     });
-                    // ---------------------------------
 
                     Region spacer = new Region();
                     HBox.setHgrow(spacer, Priority.ALWAYS);
 
-                    Button removeBtn = new Button("🗑️ Çıkar");
+                    Button removeBtn = new Button("✕ Çıkar");
                     removeBtn.setStyle("-fx-background-color: #ef4444; -fx-text-fill: white; -fx-cursor: hand; -fx-font-size: 11px;");
 
-                    // Mekanı listeden çıkarma işlemi
                     removeBtn.setOnAction(e -> removePlaceFromPlan(planObj, placeId));
-
-                    // Alt satırda nameLbl yerine nameLink'i ekliyoruz!
                     placeRow.getChildren().addAll(nameLink, spacer, removeBtn);
                     modalPlacesContainer.getChildren().add(placeRow);
 
@@ -169,21 +153,15 @@ public class PlansController {
             String planId = planObj.get("id").getAsString();
             JsonArray placesArray = planObj.getAsJsonArray("placeIds");
 
-            // Seçilen mekanı Array'den sil
             JsonArray newPlacesArray = new JsonArray();
             for (JsonElement p : placesArray) {
                 if (p.getAsLong() != placeIdToRemove) {
                     newPlacesArray.add(p);
                 }
             }
-
-            // Plan objesini yeni listeyle güncelle
             planObj.add("placeIds", newPlacesArray);
 
-            // Backend'e güncelleme (PUT) isteği yolla
             GeziBacakendClient.updatePlan(planId, planObj.toString());
-
-            // Modal'ı ve Ana listeyi yenile
             openPlanDetails(planObj);
             loadUserPlans();
 
@@ -195,7 +173,7 @@ public class PlansController {
     private void deletePlanCompletely(String planId) {
         try {
             GeziBacakendClient.deletePlan(planId);
-            loadUserPlans(); // Sayfayı yenile
+            loadUserPlans();
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -7,7 +7,6 @@ public class City {
     private String description;
     private String imageUrl;
 
-    // Arayüzde okumak için Getter metodları
     public Long getId() { return id; }
     public String getName() { return name; }
     public String getCountry() { return country; }

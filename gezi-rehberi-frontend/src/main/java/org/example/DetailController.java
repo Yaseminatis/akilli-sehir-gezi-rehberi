@@ -33,18 +33,18 @@ public class DetailController {
     @FXML private ComboBox<String> planComboBox;
 
     @FXML private VBox placeDetailModal;
-    @FXML private ImageView modalPlaceImage;
     @FXML private Label modalPlaceName;
     @FXML private Label modalPlaceCategory;
     @FXML private Label modalPlaceLongDesc;
 
-    // BUTONLAR (Anti-Spam kilitleri için)
     @FXML private Button saveToPlanBtn;
     @FXML private Button submitRatingBtn;
 
     @FXML private TextField searchField;
     @FXML private ComboBox<String> categoryFilterCombo;
     @FXML private ComboBox<Integer> ratingCombo;
+    @FXML private VBox newPlanModal;
+    @FXML private TextField newPlanNameField;
 
     private Long selectedPlaceIdForModal;
     private City currentCity;
@@ -60,18 +60,12 @@ public class DetailController {
         this.currentCity = city;
         cityNameLabel.setText(city.getName());
         cityDescLabel.setText(city.getDescription());
-
-        // Sayfa ilk açıldığında tüm mekanları yükle
         loadPlaces();
     }
 
-    // ==========================================
-    // 🔍 ARAMA VE YÜKLEME MANTIKLARI
-    // ==========================================
 
     private void loadPlaces() {
         try {
-            // Şehre ait tüm mekanları getir
             String response = GeziBacakendClient.getPlacesByCity(currentCity.getId());
             processAndLoadPlaces(response);
         } catch (Exception e) {
@@ -94,19 +88,16 @@ public class DetailController {
                 response = GeziBacakendClient.getPlacesByCity(currentCity.getId());
             }
 
-            // Gelen arama sonucunu ekrana bas
             processAndLoadPlaces(response);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
-    // JSON formatındaki mekan listesini (arama sonucu veya hepsi) ekrana kart olarak çizer
+        // ANASAYFA İÇİN FİLTRELİ ARAMA BİRLEŞİK VERİ ÇEKİMİ
     private void processAndLoadPlaces(String jsonResponse) {
         placesContainer.getChildren().clear();
 
-        // 1. KULLANICININ FAVORİLERİNİ ÇEK
         List<Long> favoriMekanIdleri = new ArrayList<>();
         try {
             Long userId = SessionManager.getCurrentUserId();
@@ -124,12 +115,10 @@ public class DetailController {
             System.out.println("Favoriler çekilirken hata: " + e.getMessage());
         }
 
-        // 2. GELEN MEKAN VERİLERİNİ KARTLARA DÖNÜŞTÜR
         try {
             JsonElement rootElement = JsonParser.parseString(jsonResponse);
             JsonArray placesArray;
 
-            // Güvenli Array Ayrıştırıcı (API Object veya Array dönse de çökmez)
             if (rootElement.isJsonObject() && rootElement.getAsJsonObject().has("data")) {
                 placesArray = rootElement.getAsJsonObject().getAsJsonArray("data");
             } else if (rootElement.isJsonArray()) {
@@ -149,46 +138,62 @@ public class DetailController {
                 String desc = placeObj.has("description") && !placeObj.get("description").isJsonNull() ? placeObj.get("description").getAsString() : "Açıklama bulunmuyor.";
                 String category = placeObj.has("category") && !placeObj.get("category").isJsonNull() ? placeObj.get("category").getAsString() : "KATEGORİ YOK";
 
-                VBox card = new VBox(12);
-                card.setStyle("-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 4); -fx-pref-width: 260; -fx-cursor: hand;");
+                VBox card = new VBox(10);
+                card.getStyleClass().add("city-card");
+                card.setStyle("-fx-padding: 18; -fx-background-color: white; -fx-background-radius: 12;");
 
-                HBox header = new HBox();
-                header.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+
+                card.setPrefSize(280, 180);
+                card.setMinSize(280, 180);
+                card.setMaxSize(280, 180);
+                card.setAlignment(javafx.geometry.Pos.TOP_LEFT);
+
+                HBox topBox = new HBox(10);
+                topBox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
                 Label categoryBadge = new Label(category);
-                categoryBadge.setStyle("-fx-background-color: #f3e8ff; -fx-text-fill: #7e22ce; -fx-padding: 4 10; -fx-background-radius: 20; -fx-font-size: 11px; -fx-font-weight: bold;");
-                Region spacerHeader = new Region();
-                HBox.setHgrow(spacerHeader, Priority.ALWAYS);
+                categoryBadge.setStyle("-fx-background-color: #f3e8ff; -fx-text-fill: #7e22ce; -fx-padding: 4 10; -fx-background-radius: 15; -fx-font-size: 11px; -fx-font-weight: bold;");
 
-                Button favBtn = new Button();
-                if (favoriMekanIdleri.contains(placeId)) {
-                    favBtn.setText("❤");
-                } else {
-                    favBtn.setText("♡");
-                }
+                Region spacerHeader = new Region();
+                HBox.setHgrow(spacerHeader, Priority.ALWAYS); // Kalbi en sağa iter
+
+                Button favBtn = new Button(favoriMekanIdleri.contains(placeId) ? "❤" : "♡");
                 favBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: #ef4444; -fx-font-size: 22px; -fx-cursor: hand; -fx-padding: 0;");
                 favBtn.setOnAction(e -> toggleFavorite(placeId, favBtn));
-                header.getChildren().addAll(categoryBadge, spacerHeader, favBtn);
+
+                topBox.getChildren().addAll(categoryBadge, spacerHeader, favBtn);
+
 
                 Label nameLbl = new Label(name);
                 nameLbl.setStyle("-fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: #111827;");
                 nameLbl.setWrapText(true);
+                nameLbl.setMaxHeight(25);
+
                 Label descLbl = new Label(desc);
                 descLbl.setWrapText(true);
-                descLbl.setMaxHeight(45);
-                descLbl.setStyle("-fx-text-fill: #6b7280; -fx-font-size: 13px;");
+                descLbl.setMaxHeight(40);
+                descLbl.setStyle("-fx-text-fill: #6b7280; -fx-font-size: 12px;");
+
+
+                Region spacerMid = new Region();
+                VBox.setVgrow(spacerMid, Priority.ALWAYS);
+
 
                 HBox footer = new HBox(10);
                 footer.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
                 Label ratingLbl = new Label("★ 4.5");
-                ratingLbl.setStyle("-fx-text-fill: #f59e0b; -fx-font-weight: bold; -fx-font-size: 14px;");
+                ratingLbl.setStyle("-fx-text-fill: #f59e0b; -fx-font-weight: bold; -fx-font-size: 15px;");
+
                 Region spacerFooter = new Region();
                 HBox.setHgrow(spacerFooter, Priority.ALWAYS);
-                Button addBtn = new Button("+ Plan");
-                addBtn.setStyle("-fx-background-color: #8b5cf6; -fx-text-fill: white; -fx-background-radius: 8; -fx-cursor: hand;");
+
+
+                Button addBtn = new Button("+ Plana Ekle");
+                addBtn.setStyle("-fx-background-color: #8b5cf6; -fx-text-fill: white; -fx-background-radius: 6; -fx-cursor: hand; -fx-font-weight: bold;");
                 addBtn.setOnAction(e -> openPlanModal(placeId, name));
+
                 footer.getChildren().addAll(ratingLbl, spacerFooter, addBtn);
 
-                card.getChildren().addAll(header, nameLbl, descLbl, footer);
+                card.getChildren().addAll(topBox, nameLbl, descLbl, spacerMid, footer);
 
                 card.setOnMouseClicked(e -> {
                     if (e.getTarget() instanceof Button) return;
@@ -202,15 +207,9 @@ public class DetailController {
         }
     }
 
-
-    // ==========================================
-    // ⭐ DETAY VE PUANLAMA MANTIĞI
-    // ==========================================
-
     private void showPlaceFullDetail(JsonObject placeObj) {
         this.selectedPlaceIdForModal = placeObj.get("id").getAsLong();
 
-        // Anti-Spam: Bu kullanıcı bu mekana daha önce puan vermiş mi?
         try {
             Long currentUserId = SessionManager.getCurrentUserId();
             String ratingsRes = GeziBacakendClient.getRatingsByPlace(selectedPlaceIdForModal);
@@ -240,7 +239,7 @@ public class DetailController {
                 }
                 if (submitRatingBtn != null) {
                     submitRatingBtn.setDisable(false);
-                    submitRatingBtn.setText("⭐ Puanı Gönder");
+                    submitRatingBtn.setText("★ Puanı Gönder");
                     submitRatingBtn.setStyle("-fx-background-color: #f59e0b; -fx-text-fill: white; -fx-font-weight: bold;");
                 }
             }
@@ -251,12 +250,6 @@ public class DetailController {
         modalPlaceName.setText(placeObj.get("name").getAsString());
         modalPlaceCategory.setText(placeObj.has("category") ? placeObj.get("category").getAsString() : "");
         modalPlaceLongDesc.setText(placeObj.has("description") ? placeObj.get("description").getAsString() : "");
-
-        String imgUrl = placeObj.has("imageUrl") && !placeObj.get("imageUrl").isJsonNull() ? placeObj.get("imageUrl").getAsString() : null;
-        if (imgUrl != null && modalPlaceImage != null) {
-            try { modalPlaceImage.setImage(new Image(imgUrl)); } catch (Exception ignored) {}
-        }
-
         placeDetailModal.setVisible(true);
     }
 
@@ -270,8 +263,6 @@ public class DetailController {
         try {
             Long userId = SessionManager.getCurrentUserId();
             GeziBacakendClient.createRating(score, userId, selectedPlaceIdForModal);
-
-            // Başarılı olunca kilitle
             ratingCombo.setDisable(true);
             if (submitRatingBtn != null) {
                 submitRatingBtn.setDisable(true);
@@ -294,11 +285,6 @@ public class DetailController {
             }
         } catch (Exception e) { e.printStackTrace(); }
     }
-
-
-    // ==========================================
-    // 🗺️ PLANLAMA MANTIĞI
-    // ==========================================
 
     private void checkExistingPlaceInPlan() {
         String selectedPlan = planComboBox.getValue();
@@ -377,19 +363,9 @@ public class DetailController {
             Long userId = SessionManager.getCurrentUserId();
 
             if (selectedPlan.equals("+ Yeni Liste Oluştur...")) {
-                TextInputDialog dialog = new TextInputDialog("Yeni Gezi");
-                dialog.setTitle("Yeni Plan Oluştur");
-                dialog.setHeaderText("Yeni gezi planınızın adını girin:");
-                dialog.setContentText("Plan Adı:");
-
-                Optional<String> result = dialog.showAndWait();
-                if (result.isPresent() && !result.get().trim().isEmpty()) {
-                    String title = result.get().trim();
-                    List<Long> initialPlaces = new ArrayList<>();
-                    initialPlaces.add(selectedPlaceId);
-                    GeziBacakendClient.createTravelPlan(userId, title, initialPlaces);
-                    closeModal();
-                }
+                planModal.setVisible(false);
+                newPlanNameField.clear();
+                newPlanModal.setVisible(true);
             } else {
                 String planId = planMap.get(selectedPlan);
                 String planResponse = GeziBacakendClient.getPlanById(planId);
@@ -401,6 +377,30 @@ public class DetailController {
                 closeModal();
             }
         } catch (Exception e) { e.printStackTrace(); }
+    }
+    @FXML
+    private void closeNewPlanModal() {
+        newPlanModal.setVisible(false);
+        planModal.setVisible(true);
+    }
+
+    @FXML
+    private void createNewPlanAndSave() {
+        String title = newPlanNameField.getText().trim();
+        if (title.isEmpty()) return;
+
+        try {
+            Long userId = SessionManager.getCurrentUserId();
+            List<Long> initialPlaces = new ArrayList<>();
+            initialPlaces.add(selectedPlaceId);
+
+            GeziBacakendClient.createTravelPlan(userId, title, initialPlaces);
+
+            newPlanModal.setVisible(false);
+            System.out.println("Yeni plan oluşturuldu ve mekan eklendi: " + title);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML

@@ -10,7 +10,7 @@
 
         <HBox alignment="CENTER_LEFT" spacing="20">
             <Button text="⬅ Ana Sayfaya Dön" onAction="#goBack" style="-fx-background-color: #6b7280; -fx-text-fill: white; -fx-cursor: hand;"/>
-            <Label text="🗺️ Gezi Planlarım" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #111827;"/>
+            <Label text="🗺 Gezi Planlarım" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #111827;"/>
         </HBox>
 
         <Separator/>
@@ -26,7 +26,7 @@
             <HBox alignment="CENTER_LEFT">
                 <Label fx:id="modalPlanTitle" text="Plan Adı" style="-fx-font-size: 22px; -fx-font-weight: bold;"/>
                 <Region HBox.hgrow="ALWAYS" />
-                <Button text="Kapat ❌" onAction="#closeModal" style="-fx-background-color: transparent; -fx-text-fill: #ef4444; -fx-cursor: hand; -fx-font-weight: bold;"/>
+                <Button text="Kapat ✕" onAction="#closeModal" style="-fx-background-color: transparent; -fx-text-fill: #ef4444; -fx-cursor: hand; -fx-font-weight: bold;"/>
             </HBox>
 
             <Separator/>

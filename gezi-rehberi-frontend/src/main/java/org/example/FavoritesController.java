@@ -50,15 +50,14 @@ public class FavoritesController {
 
             for (JsonElement element : favArray) {
                 JsonObject favObj = element.getAsJsonObject();
-                Long placeId = favObj.get("placeId").getAsLong(); // NoSQL'den sadece ID'yi aldık
+                Long placeId = favObj.get("placeId").getAsLong();
 
-                // --- SQL'DEN MEKAN BİLGİLERİNİ ÇEKELİM ---
                 String placeName = "Yükleniyor...";
                 String category = "Bilinmiyor";
                 try {
-                    String placeRes = GeziBacakendClient.getPlaceById(placeId); // API'den mekanı soruyoruz
+                    String placeRes = GeziBacakendClient.getPlaceById(placeId);
                     JsonObject pObj = JsonParser.parseString(placeRes).getAsJsonObject();
-                    if (pObj.has("data")) pObj = pObj.getAsJsonObject("data"); // Data formatındaysa içini al
+                    if (pObj.has("data")) pObj = pObj.getAsJsonObject("data");
 
                     placeName = pObj.has("name") ? pObj.get("name").getAsString() : "İsimsiz";
                     category = pObj.has("category") ? pObj.get("category").getAsString() : "Kategori Yok";
@@ -66,26 +65,34 @@ public class FavoritesController {
                     placeName = "Mekan bulunamadı (ID: " + placeId + ")";
                 }
 
-                // --- KART TASARIMI ---
+
                 HBox card = new HBox(15);
                 card.setStyle("-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 12; " +
-                        "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 5);");
+                        "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 8, 0, 0, 3);");
                 card.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
 
-                VBox infoBox = new VBox(5);
-                Label nameLbl = new Label("❤ " + placeName);
+                VBox infoBox = new VBox(8);
+
+
+                HBox nameBox = new HBox(8);
+                nameBox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+
+                Label heartLbl = new Label("❤");
+                heartLbl.setStyle("-fx-text-fill: #ef4444; -fx-font-size: 18px;");
+
+                Label nameLbl = new Label(placeName);
                 nameLbl.setStyle("-fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: #111827;");
 
+                nameBox.getChildren().addAll(heartLbl, nameLbl);
+
                 Label catLbl = new Label("Kategori: " + category);
-                catLbl.setStyle("-fx-text-fill: #6b7280; -fx-font-size: 13px;");
+                catLbl.setStyle("-fx-background-color: #f3e8ff; -fx-text-fill: #7e22ce; -fx-padding: 4 10; -fx-background-radius: 20; -fx-font-size: 11px; -fx-font-weight: bold;");
 
-                infoBox.getChildren().addAll(nameLbl, catLbl);
+                infoBox.getChildren().addAll(nameBox, catLbl);
 
-                // Kartın sağa doğru düzgün uzaması için boşluk bırakıyoruz
                 Region spacer = new Region();
                 HBox.setHgrow(spacer, Priority.ALWAYS);
 
-                // BUTONU TAMAMEN KALDIRDIK. Sadece bilgi kutusunu ekliyoruz.
                 card.getChildren().addAll(infoBox, spacer);
 
                 favoritesContainer.getChildren().add(card);
