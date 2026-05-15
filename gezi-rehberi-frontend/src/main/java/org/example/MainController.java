@@ -3,6 +3,7 @@ package org.example;
 import com.google.gson.Gson;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -12,9 +13,18 @@ import javafx.stage.Stage;
 
 public class MainController {
     @FXML private FlowPane cityContainer;
+    @FXML private javafx.scene.control.Button addCityBtn;
+    @FXML private Label welcomeLabel;
 
     @FXML
     public void initialize() {
+        if (SessionManager.getCurrentUsername() != null) {
+            welcomeLabel.setText("Merhaba, " + SessionManager.getCurrentUsername());
+        }
+        if ("USER".equals(SessionManager.getCurrentUserRole())) {
+            addCityBtn.setVisible(false);
+            addCityBtn.setManaged(false);
+        }
         try {
             // Backend'den verileri al
             String jsonResponse = GeziBacakendClient.getAllCities();
@@ -57,6 +67,20 @@ public class MainController {
             }
         } catch (Exception e) {
             cityContainer.getChildren().add(new Label("Veri çekilemedi: " + e.getMessage()));
+        }
+    }
+    @FXML
+    private void handleLogout(javafx.event.ActionEvent event){
+        try {
+            SessionManager.clearSession();
+
+            FXMLLoader loader= new FXMLLoader( getClass().getResource("/login.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root,800,600));
+            stage.centerOnScreen();
+        } catch (Exception e){
+            e.printStackTrace();
         }
     }
     @FXML

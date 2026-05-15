@@ -163,6 +163,15 @@ public class GeziBacakendClient {
 
         return response.body();
     }
+    // Belirli bir ID'ye sahip mekanın detaylarını SQL'den çeker
+    public static String getPlaceById(Long id) throws Exception {
+        java.net.http.HttpRequest request = java.net.http.HttpRequest.newBuilder()
+                .uri(java.net.URI.create(BASE_URL + "/places/" + id))
+                .GET()
+                .build();
+        java.net.http.HttpResponse<String> response = client.send(request, java.net.http.HttpResponse.BodyHandlers.ofString());
+        return response.body();
+    }
 
     /**
      * GET - Mekan ara (anahtar kelime ile)
@@ -389,6 +398,12 @@ public class GeziBacakendClient {
 
     public static void main(String[] args) {
         try {
+            String adminResponse = createUser("gizem", "gizem@akillisehir.com", "123456", "ADMIN");
+            System.out.println(" ADMIN başarıyla oluşturuldu.");
+
+            String userResponse = createUser("test", "test@akillisehir.com", "1234", "USER");
+            System.out.println(" TEST KULLANICISI (USER) başarıyla oluşturuldu.");
+            
             System.out.println("=== Tüm Şehirler ===");
             String cities = getAllCities();
             System.out.println(cities);

@@ -13,8 +13,12 @@
         <Separator style="-fx-padding: 10 0;"/>
 
         <VBox spacing="5" alignment="CENTER_LEFT">
-            <Label text="Kullanıcı ID:" style="-fx-font-weight: bold; -fx-text-fill: #374151;"/>
-            <TextField fx:id="userIdField" promptText="Örn: 1" style="-fx-padding: 10; -fx-background-radius: 5; -fx-border-color: #d1d5db; -fx-border-radius: 5;"/>
+            <Label text="Kullanıcı Email:" style="-fx-font-weight: bold; -fx-text-fill: #374151;"/>
+            <TextField fx:id="emailField" promptText="Örn: user@akillisehir.com" style="-fx-padding: 10; -fx-background-radius: 5; -fx-border-color: #d1d5db; -fx-border-radius: 5;"/>
+        </VBox>
+        <VBox spacing="5" alignment="CENTER_LEFT">
+            <Label text="Şifre:" style="-fx-font-weight: bold; -fx-text-fill: #374151;"/>
+            <PasswordField fx:id="passwordField" promptText="******" style="-fx-padding: 10; -fx-background-radius: 5; -fx-border-color: #d1d5db; -fx-border-radius: 5;"/>
         </VBox>
 
         <Label fx:id="errorLabel" text="" style="-fx-text-fill: red; -fx-font-size: 12px;"/>

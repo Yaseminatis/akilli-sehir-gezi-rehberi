@@ -17,38 +17,55 @@ public class FavoritesController {
     @FXML
     public void initialize() {
         try {
-            // Yasemin'in MongoDB API'sinden favorileri çekiyoruz
-            String jsonResponse = GeziBacakendClient.getFavoritesByUser(1L);
+            // 1. DÜZELTME: Artık sabit 1L değil, sisteme giriş yapan gerçek kullanıcının ID'sini alıyoruz!
+            Long userId = SessionManager.getCurrentUserId();
+            if (userId == null) {
+                favoritesContainer.getChildren().add(new Label("Lütfen önce giriş yapın!"));
+                return;
+            }
 
-            // JSON'ın en dışındaki kutuyu açıp "data" listesini alıyoruz
+            // Yasemin'in MongoDB API'sinden bu kullanıcının favorilerini çekiyoruz
+            String jsonResponse = GeziBacakendClient.getFavoritesByUser(userId);
+
             com.google.gson.JsonObject rootObject = com.google.gson.JsonParser.parseString(jsonResponse).getAsJsonObject();
             com.google.gson.JsonArray dataArray = rootObject.getAsJsonArray("data");
 
-            // Eğer favori yoksa
             if (dataArray == null || dataArray.isEmpty()) {
-                Label emptyLabel = new Label("Henüz favorilere eklenmiş bir mekan yok.");
+                Label emptyLabel = new Label("Henüz favorilere eklenmiş bir mekanınız yok.");
                 emptyLabel.setStyle("-fx-font-size: 16px; -fx-text-fill: #6b7280;");
                 favoritesContainer.getChildren().add(emptyLabel);
                 return;
             }
 
-            // Gelen JSON verilerini parçalayıp şık kartlara çeviriyoruz
+            // Gelen her bir favori kaydı için dönüyoruz
             for (com.google.gson.JsonElement element : dataArray) {
                 com.google.gson.JsonObject favObj = element.getAsJsonObject();
-                String placeId = favObj.get("placeId").getAsString(); // Mekanın ID'sini al
+                Long placeId = favObj.get("placeId").getAsLong(); // Mekanın ID'sini al
 
-                VBox card = new VBox();
-                card.getStyleClass().add("place-card");
-                card.setStyle("-fx-padding: 15; -fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 4);");
+                // 2. SİHİRLİ DOKUNUŞ: MongoDB'den gelen ID ile SQL'den mekanın gerçek bilgilerini çek!
+                String placeResponse = GeziBacakendClient.getPlaceById(placeId);
+                com.google.gson.JsonObject placeRoot = com.google.gson.JsonParser.parseString(placeResponse).getAsJsonObject();
 
-                Label favLabel = new Label("⭐ Kaydedilmiş Mekan (Sistem ID: " + placeId + ")");
-                favLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: #f59e0b;");
+                // Eğer mekan başarıyla bulunduysa verilerini al
+                if (placeRoot.get("success").getAsBoolean()) {
+                    com.google.gson.JsonObject placeData = placeRoot.getAsJsonObject("data");
+                    String realName = placeData.get("name").getAsString();
+                    String realCategory = placeData.get("category").getAsString();
 
-                Label desc = new Label("Bu mekan NoSQL (MongoDB) veritabanından başarıyla çekildi!");
-                desc.setStyle("-fx-text-fill: #4b5563; -fx-font-size: 13px;");
+                    // Kartı Tasarla
+                    VBox card = new VBox();
+                    card.getStyleClass().add("place-card");
+                    card.setStyle("-fx-padding: 15; -fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 4);");
 
-                card.getChildren().addAll(favLabel, desc);
-                favoritesContainer.getChildren().add(card);
+                    Label nameLabel = new Label("⭐ " + realName);
+                    nameLabel.setStyle("-fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: #f59e0b;");
+
+                    Label catLabel = new Label("Kategori: " + realCategory);
+                    catLabel.setStyle("-fx-text-fill: #6b7280; -fx-font-size: 13px;");
+
+                    card.getChildren().addAll(nameLabel, catLabel);
+                    favoritesContainer.getChildren().add(card);
+                }
             }
 
         } catch (Exception e) {
